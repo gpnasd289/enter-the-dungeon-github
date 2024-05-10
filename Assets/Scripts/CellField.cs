@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CellField : MonoBehaviour
+public class CellField : GOManager
 {
 	/*[Serializable]
 	public class Food
@@ -68,7 +68,7 @@ public class CellField : MonoBehaviour
 
 	//private Food[] ItemsAmountLimits;
 
-	//private IFieldHandler FieldHandler;
+	private IFieldHandler FieldHandler;
 
 	public int Width { get; private set; }
 
@@ -88,10 +88,20 @@ public class CellField : MonoBehaviour
 
 	public bool Shuffling { get; private set; }
 	public List<GameObject> listItemPrefab;
-	// Start is called before the first frame update
-	void Start()
+	public Cell[,] cellArr = new Cell[8,8];
+	public List<Cell> cellChoseArr;
+	public int idChose;
+	public static CellField instance;
+
+    private void Awake()
+    {
+		instance = this;
+    }
+    // Start is called before the first frame update
+    void Start()
     {
         GenerateField();
+		
     }
 
     // Update is called once per frame
@@ -108,7 +118,8 @@ public class CellField : MonoBehaviour
                 GameObject spawnCell = Instantiate(cellPrefab.gameObject, new Vector3(y, x), Quaternion.identity, cellsGroup);
 				GameObject spawnItem = Instantiate(listItemPrefab[Random.Range(0, 5)], new Vector3(y, x), Quaternion.identity, itemsGroup);
 				spawnCell.GetComponent<Cell>().SetItem(spawnItem.GetComponent<CellItem>());
-                spawnCell.name = $"Cell {x} {y}";
+				cellArr[y, x] = spawnCell.GetComponent<Cell>();
+				spawnCell.name = $"Cell {x} {y}";
 				spawnItem.name = $"Item {x} {y}";
 			}
         }

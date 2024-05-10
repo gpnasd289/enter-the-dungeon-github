@@ -165,16 +165,67 @@ public class Cell : NonUIObject
 
     protected override void MouseDown()
     {
+		
     }
 
     protected override void MouseUp()
     {
-    }
+		if (CellField.instance.cellChoseArr.Count >= 2)
+		{
+			for (int i = 0; i < CellField.instance.cellChoseArr.Count; i++)
+			{
+				CellField.instance.cellChoseArr[i].Item.Disappear();
+			}
+		}
+        else
+        {
+			CellField.instance.cellChoseArr.Clear();
+
+		}
+	}
 
     protected override void MouseEnter()
     {
         Debug.Log("enter cell " + Item.id);
-
+		if (CellField.instance.cellChoseArr.Count == 0)
+        {
+			CellField.instance.idChose = Item.id;
+			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+            {
+				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+                {
+					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose && !CellField.instance.cellChoseArr.Contains(gameObject.GetComponent<Cell>()))
+                    {
+						Debug.Log("item id: " + CellField.instance.cellArr[i, j].Item.id);
+						CellField.instance.cellArr[i, j].Item.Highlight();
+						CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
+					}
+                    else
+                    {
+						CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+					}
+                }
+			}
+        }
+        else
+        {
+			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+			{
+				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+				{
+					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose && !CellField.instance.cellChoseArr.Contains(gameObject.GetComponent<Cell>()))
+					{
+						Debug.Log("item id: " + CellField.instance.cellArr[i, j].Item.id);
+						CellField.instance.cellArr[i, j].Item.Highlight();
+						CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
+					}
+					else
+					{
+						CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+					}
+				}
+			}
+		}
     }
 
     protected override void MouseExit()

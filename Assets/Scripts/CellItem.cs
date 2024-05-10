@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,18 +29,26 @@ public class CellItem : GOManager
     private Material Material;
 
     public bool Highlighted { get; private set; }
-    public void Highlight(bool doHighlight)
+    public void Highlight()
     {
+        icon.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 1f);
     }
-    private void ResetToDefaultLooks()
+    public void ResetToDefaultLooks()
     {
+        icon.transform.DOScale(new Vector3(1, 1, 1), 1f);
+        icon.DOFade(255, 1f);
     }
-    public void SetGrayedOut(bool value, float delay = 0f)
+    public void SetGrayedOut()
     {
-
+        icon.DOFade(200, 1f);
     }
     public void FlyToPlayer(float flyDelay, Action onComplete = null)
     {
+    }
+    public void Disappear()
+    {
+        icon.transform.DOScale(Vector3.zero, 1f);
+        icon.gameObject.SetActive(false);
     }
     public void PopItem()
     {
