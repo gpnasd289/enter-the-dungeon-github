@@ -176,11 +176,18 @@ public class Cell : NonUIObject
 			{
 				CellField.instance.cellChoseArr[i].Item.Disappear();
 			}
-		}
+            CellField.instance.cellChoseArr.Clear();
+        }
         else
         {
 			CellField.instance.cellChoseArr.Clear();
-
+		}
+		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+			{
+                CellField.instance.cellArr[i, j].Item.ResetToDefaultLooks();
+			}
 		}
 	}
 
@@ -190,15 +197,14 @@ public class Cell : NonUIObject
 		if (CellField.instance.cellChoseArr.Count == 0)
         {
 			CellField.instance.idChose = Item.id;
-			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+            CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
+            for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
             {
 				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
                 {
-					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose && !CellField.instance.cellChoseArr.Contains(gameObject.GetComponent<Cell>()))
+					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
                     {
-						Debug.Log("item id: " + CellField.instance.cellArr[i, j].Item.id);
 						CellField.instance.cellArr[i, j].Item.Highlight();
-						CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
 					}
                     else
                     {
@@ -209,15 +215,17 @@ public class Cell : NonUIObject
         }
         else
         {
+			if (Item.id == CellField.instance.idChose && !CellField.instance.cellChoseArr.Contains(gameObject.GetComponent<Cell>()))
+			{
+                CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
+            }
 			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 			{
 				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
 				{
-					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose && !CellField.instance.cellChoseArr.Contains(gameObject.GetComponent<Cell>()))
+					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
 					{
-						Debug.Log("item id: " + CellField.instance.cellArr[i, j].Item.id);
 						CellField.instance.cellArr[i, j].Item.Highlight();
-						CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
 					}
 					else
 					{

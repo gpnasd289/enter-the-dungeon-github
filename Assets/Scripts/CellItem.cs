@@ -40,7 +40,8 @@ public class CellItem : GOManager
     }
     public void SetGrayedOut()
     {
-        icon.DOFade(200, 1f);
+        icon.DOFade(100, 1f);
+        icon.transform.DOScale(new Vector3(0.8f, 0.8f, 0.8f), 1f);
     }
     public void FlyToPlayer(float flyDelay, Action onComplete = null)
     {
