@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using QuangDM.Common;
 
 public class Cell : NonUIObject
 {
@@ -175,6 +176,7 @@ public class Cell : NonUIObject
     {
 		CellField.instance.idChose = Item.id;
 		CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+		//Observer.Instance.Notify(EventName.BeginChain, this);
 		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 		{
 			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
@@ -201,6 +203,7 @@ public class Cell : NonUIObject
 				CellField.instance.cellChoseList[i].Item.Disappear();
 			}
             CellField.instance.cellChoseList.Clear();
+			//Observer.Instance.Notify(EventName.ResetChain);
         }
         else
         {
@@ -215,7 +218,7 @@ public class Cell : NonUIObject
 		}
 	}
 
-    protected override void MouseEnter()
+    protected override void MouseDrag()
     {
         Debug.Log("enter cell " + Item.id);
 		if (isMouseHold)
@@ -224,6 +227,7 @@ public class Cell : NonUIObject
 			{
 				CellField.instance.idChose = Item.id;
 				CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+				//Observer.Instance.Notify(EventName.EnterCell, this);
 				for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 				{
 					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
@@ -258,6 +262,7 @@ public class Cell : NonUIObject
 				if (Item.id == CellField.instance.idChose && !CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
 				{
 					CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+					//Observer.Instance.Notify(EventName.EnterCell, this);
 				}
 				else if (Item.id == CellField.instance.idChose && CellField.instance.cellChoseList.Count > 1 && CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
                 {

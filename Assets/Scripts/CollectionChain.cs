@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using QuangDM.Common;
 
 public class CollectionChain : GOManager
 {
@@ -23,13 +24,21 @@ public class CollectionChain : GOManager
 
 	public int ChainItemId { get; protected set; }
 
-	public virtual void ResetChain()
+    private void Start()
+    {
+		//Observer.Instance.AddObserver(EventName.EnterCell, EnterCell);
+		//Observer.Instance.AddObserver(EventName.BeginChain, BeginChain);
+		//Observer.Instance.AddObserver(EventName.ResetChain, ResetChain);
+	}
+    public virtual void ResetChain(object data)
 	{
 	}
 
-	public void Begin(Cell startingCell)
+	public void BeginChain(object startingCell)
 	{
-		OnChainBegin(startingCell);
+		Cell startCell = ((Cell)startingCell);
+		ChainItemId = startCell.Item.id;
+		AddCell(startCell, true);
 	}
 
 	public virtual void End(bool chainMatched)
@@ -45,10 +54,12 @@ public class CollectionChain : GOManager
 
 	public void AddCell(Cell cell, bool highlight = false)
 	{
+		Cells.Add(cell);
 	}
 
 	protected void RemoveCell(Cell cell)
 	{
+		Cells.Remove(cell);
 	}
 
 	protected virtual void UpdateDisplay()
@@ -62,12 +73,14 @@ public class CollectionChain : GOManager
 
 	protected virtual int GetChainItemID()
 	{
-		return 0;
+		return ChainItemId;
 	}
 
-	public virtual void EnterCell(Cell cell)
+	public virtual void EnterCell(object cell)
 	{
+
 	}
+
 
 	public void ExitCell(Cell cell)
 	{
