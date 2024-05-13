@@ -31,24 +31,24 @@ public class CellItem : GOManager
     public bool Highlighted { get; private set; }
     public void Highlight()
     {
-        icon.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 1f);
+        icon.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f);
     }
     public void ResetToDefaultLooks()
     {
-        icon.transform.DOScale(new Vector3(1, 1, 1), 1f);
+        icon.transform.DOScale(new Vector3(1, 1, 1), 0.5f);
         icon.DOFade(255, 1f);
     }
     public void SetGrayedOut()
     {
         icon.DOFade(100, 1f);
-        icon.transform.DOScale(new Vector3(0.8f, 0.8f, 0.8f), 1f);
+        icon.transform.DOScale(new Vector3(0.8f, 0.8f, 0.8f), 0.5f);
     }
     public void FlyToPlayer(float flyDelay, Action onComplete = null)
     {
     }
     public void Disappear()
     {
-        icon.transform.DOScale(Vector3.zero, 1f);
+        icon.transform.DOScale(Vector3.zero, 0.5f);
         icon.gameObject.SetActive(false);
     }
     public void PopItem()

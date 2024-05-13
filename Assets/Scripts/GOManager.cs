@@ -5,7 +5,7 @@ using UnityEngine;
 public class GOManager : MonoBehaviour
 {
     public bool Awoken { get; private set; }
-
+    public bool isMouseHold;
     protected virtual void Construct()
     {
     }
@@ -28,5 +28,13 @@ public class GOManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButton(0))
+        {
+            isMouseHold = true;
+        }
+        else
+        {
+            isMouseHold = false;
+        }
     }
 }

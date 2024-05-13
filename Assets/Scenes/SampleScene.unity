@@ -201,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaddd9c173157d240bf62804af408132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMouseHold: 0
   LowFinisherReadyEffect: {fileID: 0}
   MedFinisherReadyEffect: {fileID: 0}
   HighFinisherReadyEffect: {fileID: 0}
@@ -302,6 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c661c67471fd4c9be87ab0261a733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMouseHold: 0
   Field: {fileID: 829684364}
 --- !u!1 &317888351
 GameObject:
@@ -778,8 +780,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9a7824c4471ad44a8fd988602b64062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellField: {fileID: 0}
-  CollectionChain: {fileID: 0}
+  CellField: {fileID: 829684364}
+  CollectionChain: {fileID: 220056218}
 --- !u!1 &829684363
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,6 +811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30233e7b8e980c141b23faa965054ae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMouseHold: 0
   FlowToTheDeepestAdjacentCell: 0
   ItemStepDuration: 0
   ItemStepArching: 0
@@ -828,7 +831,7 @@ MonoBehaviour:
   - {fileID: 1373864993568946, guid: cec280c111f06da4992a59565d6db92e, type: 3}
   - {fileID: 1373864993568946, guid: a09bd173eb99c514a97386c46435609f, type: 3}
   - {fileID: 1373864993568946, guid: 634f0b184e5994446acfe4a9bd6543db, type: 3}
-  cellChoseArr: []
+  cellChoseList: []
   idChose: 8
 --- !u!4 &829684365
 Transform:
@@ -1368,6 +1371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf839f2c1cf9444cb58a58d1a4f23c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMouseHold: 0
 --- !u!1 &2094199572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,7 +1457,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1532,7 +1536,7 @@ LineRenderer:
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1

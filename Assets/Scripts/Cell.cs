@@ -74,6 +74,9 @@ public class Cell : NonUIObject
 
 	public bool Collectible => false;
 
+	public Vector2 cellId;
+
+	public bool isTracing;
 	public void Initialize(CellField field, Vector2Int placement)
 	{
 	}
@@ -138,6 +141,11 @@ public class Cell : NonUIObject
 
 	public bool IsNeighbour(Cell cell)
 	{
+		if (((cell.cellId.x == cellId.x + 1) || (cell.cellId.x == cellId.x - 1) || (cell.cellId.x == cellId.x))
+            && ((cell.cellId.y == cellId.y + 1) || (cell.cellId.y == cellId.y - 1) || (cell.cellId.y == cellId.y)))
+        {
+			return true;
+        }
 		return false;
 	}
 
@@ -165,22 +173,38 @@ public class Cell : NonUIObject
 
     protected override void MouseDown()
     {
-		
-    }
+		CellField.instance.idChose = Item.id;
+		CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+			{
+				if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+				{
+					CellField.instance.cellArr[i, j].Item.Highlight();
+				}
+				else
+				{
+					CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+				}
+			}
+		}
+	}
 
     protected override void MouseUp()
     {
-		if (CellField.instance.cellChoseArr.Count >= 2)
+		Debug.Log("Cell mouse up");
+		if (CellField.instance.cellChoseList.Count >= 2)
 		{
-			for (int i = 0; i < CellField.instance.cellChoseArr.Count; i++)
+			for (int i = 0; i < CellField.instance.cellChoseList.Count; i++)
 			{
-				CellField.instance.cellChoseArr[i].Item.Disappear();
+				CellField.instance.cellChoseList[i].Item.Disappear();
 			}
-            CellField.instance.cellChoseArr.Clear();
+            CellField.instance.cellChoseList.Clear();
         }
         else
         {
-			CellField.instance.cellChoseArr.Clear();
+			CellField.instance.cellChoseList.Clear();
 		}
 		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 		{
@@ -194,42 +218,52 @@ public class Cell : NonUIObject
     protected override void MouseEnter()
     {
         Debug.Log("enter cell " + Item.id);
-		if (CellField.instance.cellChoseArr.Count == 0)
+		if (isMouseHold)
         {
-			CellField.instance.idChose = Item.id;
-            CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
-            for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
-            {
-				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
-                {
-					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
-                    {
-						CellField.instance.cellArr[i, j].Item.Highlight();
-					}
-                    else
-                    {
-						CellField.instance.cellArr[i, j].Item.SetGrayedOut();
-					}
-                }
-			}
-        }
-        else
-        {
-			if (Item.id == CellField.instance.idChose && !CellField.instance.cellChoseArr.Contains(gameObject.GetComponent<Cell>()))
+			if (CellField.instance.cellChoseList.Count == 0)
 			{
-                CellField.instance.cellChoseArr.Add(gameObject.GetComponent<Cell>());
-            }
-			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
-			{
-				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+				CellField.instance.idChose = Item.id;
+				CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+				for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 				{
-					if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
 					{
-						CellField.instance.cellArr[i, j].Item.Highlight();
+						if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+						{
+							CellField.instance.cellArr[i, j].Item.Highlight();
+						}
+						else
+						{
+							CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+						}
 					}
-					else
+				}
+			}
+			else
+			{
+				for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+				{
+					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
 					{
-						CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+						if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+						{
+							CellField.instance.cellArr[i, j].Item.Highlight();
+						}
+						else
+						{
+							CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+						}
+					}
+				}
+				if (Item.id == CellField.instance.idChose && !CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
+				{
+					CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+				}
+				else if (Item.id == CellField.instance.idChose && CellField.instance.cellChoseList.Count > 1 && CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
+                {
+					if (CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 2] == this)
+					{
+						CellField.instance.cellChoseList.Remove(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]);
 					}
 				}
 			}

@@ -24,6 +24,10 @@ public class NonUIObject : GOManager
 	{
 	}
 
+	protected virtual void MouseDrag()
+    {
+
+    }
 	public static bool IsPointerOverUIObject()
 	{
 		return false;
@@ -53,5 +57,8 @@ public class NonUIObject : GOManager
 	{
 		MouseOver();
 	}
-
+    private void OnMouseDrag()
+    {
+		MouseDrag();
+    }
 }
