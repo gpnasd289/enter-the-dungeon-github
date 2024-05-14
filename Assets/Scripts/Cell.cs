@@ -149,7 +149,30 @@ public class Cell : NonUIObject
         }
 		return false;
 	}
-
+	public bool CheckUpLeft(Cell cell)
+    {
+		if ((cell.cellId.x == cellId.x - 1) && (cell.cellId.y == cellId.y + 1))
+        {
+			return true;
+        }
+		return false;
+    }
+	public bool CheckUpMid(Cell cell)
+    {
+		if ((cell.cellId.x == cellId.x) && (cell.cellId.y == cellId.y + 1))
+		{
+			return true;
+		}
+		return false;
+	}
+	public bool CheckUpRight(Cell cell)
+	{
+		if ((cell.cellId.x == cellId.x + 1) && (cell.cellId.y == cellId.y + 1))
+		{
+			return true;
+		}
+		return false;
+	}
 	public void EnhanceCollider()
 	{
 	}
@@ -174,20 +197,24 @@ public class Cell : NonUIObject
 
     protected override void MouseDown()
     {
-		CellField.instance.idChose = Item.id;
-		CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
-		//Observer.Instance.Notify(EventName.BeginChain, this);
-		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
-		{
-			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+		if (Item != null)
+        {
+			Debug.Log(Item.name);
+			CellField.instance.idChose = Item.id;
+			CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+			Observer.Instance.Notify(EventName.BeginChain, this);
+			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 			{
-				if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
 				{
-					CellField.instance.cellArr[i, j].Item.Highlight();
-				}
-				else
-				{
-					CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+					if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+					{
+						CellField.instance.cellArr[i, j].Item.Highlight();
+					}
+					else if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id != CellField.instance.idChose)
+					{
+						CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+					}
 				}
 			}
 		}
@@ -195,48 +222,54 @@ public class Cell : NonUIObject
 
     protected override void MouseUp()
     {
-		Debug.Log("Cell mouse up");
+		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+			{
+				if (CellField.instance.cellArr[i, j].Item != null)
+                {
+					CellField.instance.cellArr[i, j].Item.ResetToDefaultLooks();
+				}
+			}
+		}
 		if (CellField.instance.cellChoseList.Count >= 2)
 		{
 			for (int i = 0; i < CellField.instance.cellChoseList.Count; i++)
 			{
-				CellField.instance.cellChoseList[i].Item.Disappear();
+				if (CellField.instance.cellChoseList[i].Item != null)
+				{
+					CellField.instance.cellChoseList[i].Item.Disappear();
+					CellField.instance.cellChoseList[i].Item = null;
+				}
 			}
             CellField.instance.cellChoseList.Clear();
-			//Observer.Instance.Notify(EventName.ResetChain);
+			Observer.Instance.Notify(EventName.ResetChain);
+			Debug.Log("resetchain");
         }
         else
         {
 			CellField.instance.cellChoseList.Clear();
 		}
-		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
-		{
-			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
-			{
-                CellField.instance.cellArr[i, j].Item.ResetToDefaultLooks();
-			}
-		}
 	}
 
-    protected override void MouseDrag()
+    protected override void MouseEnter()
     {
-        Debug.Log("enter cell " + Item.id);
-		if (isMouseHold)
+		if (isMouseHold && Item != null)
         {
 			if (CellField.instance.cellChoseList.Count == 0)
 			{
 				CellField.instance.idChose = Item.id;
 				CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
-				//Observer.Instance.Notify(EventName.EnterCell, this);
+				Observer.Instance.Notify(EventName.AddToChain, this);
 				for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
 				{
 					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
 					{
-						if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+						if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
 						{
 							CellField.instance.cellArr[i, j].Item.Highlight();
 						}
-						else
+						else if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id != CellField.instance.idChose)
 						{
 							CellField.instance.cellArr[i, j].Item.SetGrayedOut();
 						}
@@ -249,11 +282,11 @@ public class Cell : NonUIObject
 				{
 					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
 					{
-						if (CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+						if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
 						{
 							CellField.instance.cellArr[i, j].Item.Highlight();
 						}
-						else
+						else if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id != CellField.instance.idChose)
 						{
 							CellField.instance.cellArr[i, j].Item.SetGrayedOut();
 						}
@@ -262,13 +295,15 @@ public class Cell : NonUIObject
 				if (Item.id == CellField.instance.idChose && !CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
 				{
 					CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
-					//Observer.Instance.Notify(EventName.EnterCell, this);
+					Observer.Instance.Notify(EventName.AddToChain, this);
 				}
 				else if (Item.id == CellField.instance.idChose && CellField.instance.cellChoseList.Count > 1 && CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
                 {
 					if (CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 2] == this)
 					{
 						CellField.instance.cellChoseList.Remove(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]);
+						CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1].Item = null;
+						Observer.Instance.Notify(EventName.RemoveFromChain, CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]);
 					}
 				}
 			}

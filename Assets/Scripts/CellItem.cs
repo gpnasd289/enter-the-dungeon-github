@@ -31,7 +31,7 @@ public class CellItem : GOManager
     public bool Highlighted { get; private set; }
     public void Highlight()
     {
-        icon.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.5f);
+        icon.transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), 0.5f);
     }
     public void ResetToDefaultLooks()
     {

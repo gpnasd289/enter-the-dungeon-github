@@ -11,8 +11,8 @@ namespace QuangDM.Common
         public static readonly string EnterCell = "EnterCell";
         public static readonly string ExitCell = "ExitCell";
         public static readonly string ResetChain = "ResetChain";
-        public static readonly string StackUnlock = "StackUnlock";
-        public static readonly string LevelComplete = "LevelComplete";
+        public static readonly string AddToChain = "AddToChain";
+        public static readonly string RemoveFromChain = "RemoveFromChain";
     }
     public class Observer : MonoBehaviour
     {

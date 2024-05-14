@@ -26,17 +26,23 @@ public class CollectionChain : GOManager
 
     private void Start()
     {
-		//Observer.Instance.AddObserver(EventName.EnterCell, EnterCell);
-		//Observer.Instance.AddObserver(EventName.BeginChain, BeginChain);
-		//Observer.Instance.AddObserver(EventName.ResetChain, ResetChain);
+		Observer.Instance.AddObserver(EventName.EnterCell, EnterCell);
+		Observer.Instance.AddObserver(EventName.BeginChain, BeginChain);
+		Observer.Instance.AddObserver(EventName.ResetChain, ResetChain);
+		Observer.Instance.AddObserver(EventName.AddToChain, AddToChain);
+		Observer.Instance.AddObserver(EventName.RemoveFromChain, RemoveFromChain);
+
 	}
-    public virtual void ResetChain(object data)
+	public virtual void ResetChain(object data)
 	{
+		Line.positionCount = 1;
+		
 	}
 
 	public void BeginChain(object startingCell)
 	{
-		Cell startCell = ((Cell)startingCell);
+		Cell startCell = (Cell)startingCell;
+		Line.SetPosition(0, startCell.transform.position);
 		ChainItemId = startCell.Item.id;
 		AddCell(startCell, true);
 	}
@@ -54,14 +60,24 @@ public class CollectionChain : GOManager
 
 	public void AddCell(Cell cell, bool highlight = false)
 	{
-		Cells.Add(cell);
+		//Cells.Add(cell);
 	}
 
 	protected void RemoveCell(Cell cell)
 	{
-		Cells.Remove(cell);
+		//Cells.Remove(cell);
 	}
-
+	public void AddToChain(object cell)
+    {
+		Cell cellAdd = (Cell)cell;
+		Line.positionCount++;
+		Line.SetPosition(Line.positionCount - 1, cellAdd.transform.position);
+	}
+	public void RemoveFromChain(object cell)
+    {
+		Cell cellRemove = (Cell)cell;
+		Line.positionCount--;
+	}
 	protected virtual void UpdateDisplay()
 	{
 	}
@@ -78,7 +94,7 @@ public class CollectionChain : GOManager
 
 	public virtual void EnterCell(object cell)
 	{
-
+		
 	}
 
 
@@ -89,4 +105,8 @@ public class CollectionChain : GOManager
 	public void OverCell(Cell cell)
 	{
 	}
+	public void FillCell()
+    {
+		
+    }
 }

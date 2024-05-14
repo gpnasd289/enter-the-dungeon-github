@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,17 @@ using UnityEngine.UI;
 
 public class CellField : GOManager
 {
-	/*[Serializable]
-	public class Food
-	{
-		public int ID;
+    [Serializable]
+    public class Element
+    {
+        public int ID;
 
-		public ComboItems.CellItems CellItem;
+        public ComboItems.CellItems CellItem;
 
-		public int MAXAmount;
-	}*/
+        public int MAXAmount;
+    }
 
-	public bool FlowToTheDeepestAdjacentCell;
+    public bool FlowToTheDeepestAdjacentCell;
 
 	public float ItemStepDuration;
 
@@ -88,7 +89,7 @@ public class CellField : GOManager
 
 	public bool Shuffling { get; private set; }
 	public List<GameObject> listItemPrefab;
-	public Cell[,] cellArr = new Cell[8,8];
+	public Cell[,] cellArr = new Cell[6,6];
 	public List<Cell> cellChoseList;
 	public int idChose;
 	public static CellField instance;
@@ -116,12 +117,12 @@ public class CellField : GOManager
         {
             for (int y = 0; y < cellSize.y; y++)
             {
-                GameObject spawnCell = Instantiate(cellPrefab.gameObject, new Vector3(y, x), Quaternion.identity, cellsGroup);
-				GameObject spawnItem = Instantiate(listItemPrefab[Random.Range(0, 5)], new Vector3(y, x), Quaternion.identity, itemsGroup);
+                GameObject spawnCell = Instantiate(cellPrefab.gameObject, new Vector3(x * cellPrefab.transform.localScale.y, y * cellPrefab.transform.localScale.x), Quaternion.identity, cellsGroup);
+				GameObject spawnItem = Instantiate(listItemPrefab[UnityEngine.Random.Range(0, 5)], new Vector3(x * cellPrefab.transform.localScale.y, y * cellPrefab.transform.localScale.x), Quaternion.identity, itemsGroup);
 				spawnCell.GetComponent<Cell>().SetItem(spawnItem.GetComponent<CellItem>());
 				spawnCell.GetComponent<Cell>().cellId.x = x;
 				spawnCell.GetComponent<Cell>().cellId.y = y;
-				cellArr[y, x] = spawnCell.GetComponent<Cell>();
+				cellArr[x, y] = spawnCell.GetComponent<Cell>();
 				spawnCell.name = $"Cell {x} {y}";
 				spawnItem.name = $"Item {x} {y}";
 			}
