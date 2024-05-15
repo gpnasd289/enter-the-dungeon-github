@@ -155,30 +155,6 @@ public class Cell : NonUIObject
 	{
 		return Mathf.Abs(cell.cellId.x - cellId.x) <= 1 && Mathf.Abs(cell.cellId.y - cellId.y) <= 1;
 	}
-	public bool CheckUpLeft(Cell cell)
-    {
-		if ((cell.cellId.x == cellId.x - 1) && (cell.cellId.y == cellId.y + 1))
-        {
-			return true;
-        }
-		return false;
-    }
-	public bool CheckUpMid(Cell cell)
-    {
-		if ((cell.cellId.x == cellId.x) && (cell.cellId.y == cellId.y + 1))
-		{
-			return true;
-		}
-		return false;
-	}
-	public bool CheckUpRight(Cell cell)
-	{
-		if ((cell.cellId.x == cellId.x + 1) && (cell.cellId.y == cellId.y + 1))
-		{
-			return true;
-		}
-		return false;
-	}
 	public void EnhanceCollider()
 	{
 	}

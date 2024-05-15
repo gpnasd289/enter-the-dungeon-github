@@ -133,7 +133,8 @@ public class CellField : GOManager
 					GameObject spawnItem = Instantiate(itemPrefab, cellPosition, Quaternion.identity, itemsGroup);
 					cell.SetItem(spawnItem.GetComponent<CellItem>());
 					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
-					spawnItem.name = $"Item {x} {y}";
+                    spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
+                    spawnItem.name = $"Item {x} {y}";
 				}
 				else
                 {
@@ -141,6 +142,7 @@ public class CellField : GOManager
 					GameObject itemPrefab = listItemPrefab[UnityEngine.Random.Range(0, listItemPrefab.Count)];
 					GameObject spawnItem = Instantiate(itemPrefab, cellPosition, Quaternion.identity, itemsGroup);
 					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
+					spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
 					spawnItem.name = $"Item {x} {y}";
 				}
 			}
@@ -153,7 +155,7 @@ public class CellField : GOManager
 		GameObject itemPrefab = listItemPrefab[UnityEngine.Random.Range(0, listItemPrefab.Count)];
 		GameObject spawnItem = Instantiate(itemPrefab, cellPosition, Quaternion.identity, itemsGroup);
 		cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
-		spawnItem.name = $"Item {x} {y}";
+		spawnItem.name = $"ItemAdd {x} {y}";
 	}
 	public bool IsValidPosition(Vector2Int position)
 	{

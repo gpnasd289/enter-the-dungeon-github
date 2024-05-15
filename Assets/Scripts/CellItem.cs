@@ -28,6 +28,7 @@ public class CellItem : GOManager
 
     private Material Material;
 
+    public Vector2Int Placement;
     public bool Highlighted { get; private set; }
     public void Highlight()
     {
