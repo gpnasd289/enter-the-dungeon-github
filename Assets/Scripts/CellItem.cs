@@ -43,8 +43,10 @@ public class CellItem : GOManager
         icon.DOFade(100, 1f);
         icon.transform.DOScale(new Vector3(0.8f, 0.8f, 0.8f), 0.5f);
     }
-    public void FlyToPlayer(float flyDelay, Action onComplete = null)
+    public void FlyToPlayer(float flyDelay, Action onComplete)
     {
+        DisableMaskInteraction();
+        icon.transform.DOMove(new Vector3(1,11,0), 1f).SetDelay(flyDelay).OnComplete(() => onComplete?.Invoke());
     }
     public void Disappear()
     {
@@ -57,6 +59,7 @@ public class CellItem : GOManager
 
     public virtual void DisableMaskInteraction()
     {
+        icon.maskInteraction = SpriteMaskInteraction.None;
     }
 
     protected override void Construct()

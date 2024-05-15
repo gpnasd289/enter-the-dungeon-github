@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using QuangDM.Common;
+using DG.Tweening;
 
 public class Cell : NonUIObject
 {
@@ -77,9 +78,10 @@ public class Cell : NonUIObject
 
 	public Vector2 cellId;
 
-	public bool isTracing;
 	public void Initialize(CellField field, Vector2Int placement)
 	{
+		this.Field = field;
+		this.Placement = placement;
 	}
 
 	public void SetItem(CellItem item)
@@ -95,10 +97,19 @@ public class Cell : NonUIObject
 	{
 	}
 
-	public void Drop()
+	public void DropItem(CellItem newItem, Action onComplete = null)
 	{
+		SetItem(newItem);
+		newItem.transform.DOMove(this.transform.position, 0.5f).OnComplete(() => onComplete?.Invoke());
 	}
-
+	private bool IsValidDropTarget(Cell targetCell)
+	{
+		return targetCell.Item == null;
+	}
+	public void ClearItem()
+    {
+		Item = null;
+    }
 	public void Collapse(float flyDelay = 0f, bool finisher = false, Action onComplete = null)
 	{
 	}
@@ -142,12 +153,7 @@ public class Cell : NonUIObject
 
 	public bool IsNeighbour(Cell cell)
 	{
-		if (((cell.cellId.x == cellId.x + 1) || (cell.cellId.x == cellId.x - 1) || (cell.cellId.x == cellId.x))
-            && ((cell.cellId.y == cellId.y + 1) || (cell.cellId.y == cellId.y - 1) || (cell.cellId.y == cellId.y)))
-        {
-			return true;
-        }
-		return false;
+		return Mathf.Abs(cell.cellId.x - cellId.x) <= 1 && Mathf.Abs(cell.cellId.y - cellId.y) <= 1;
 	}
 	public bool CheckUpLeft(Cell cell)
     {
@@ -200,20 +206,20 @@ public class Cell : NonUIObject
 		if (Item != null)
         {
 			Debug.Log(Item.name);
-			CellField.instance.idChose = Item.id;
-			CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+			Field.idChose = Item.id;
+			Field.cellChoseList.Add(this);
 			Observer.Instance.Notify(EventName.BeginChain, this);
-			for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+			for (int i = 0; i < Field.cellArr.GetLength(0); i++)
 			{
-				for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+				for (int j = 0; j < Field.cellArr.GetLength(0); j++)
 				{
-					if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
+					if (Field.cellArr[i, j].Item != null && Field.cellArr[i, j].Item.id == Field.idChose)
 					{
-						CellField.instance.cellArr[i, j].Item.Highlight();
+						Field.cellArr[i, j].Item.Highlight();
 					}
-					else if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id != CellField.instance.idChose)
+					else if (Field.cellArr[i, j].Item != null && Field.cellArr[i, j].Item.id != Field.idChose)
 					{
-						CellField.instance.cellArr[i, j].Item.SetGrayedOut();
+						Field.cellArr[i, j].Item.SetGrayedOut();
 					}
 				}
 			}
@@ -222,33 +228,25 @@ public class Cell : NonUIObject
 
     protected override void MouseUp()
     {
-		for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+		ResetAllCellHighlights();
+		if (Field.cellChoseList.Count >= 2)
 		{
-			for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
+			Observer.Instance.Notify(EventName.MatchChain);
+			for (int i = 0; i < Field.cellChoseList.Count; i++)
 			{
-				if (CellField.instance.cellArr[i, j].Item != null)
-                {
-					CellField.instance.cellArr[i, j].Item.ResetToDefaultLooks();
-				}
-			}
-		}
-		if (CellField.instance.cellChoseList.Count >= 2)
-		{
-			for (int i = 0; i < CellField.instance.cellChoseList.Count; i++)
-			{
-				if (CellField.instance.cellChoseList[i].Item != null)
+				if (Field.cellChoseList[i].Item != null)
 				{
-					CellField.instance.cellChoseList[i].Item.Disappear();
-					CellField.instance.cellChoseList[i].Item = null;
+					Field.cellChoseList[i].Item.Disappear();
+					Field.cellChoseList[i].Item = null;
 				}
 			}
-            CellField.instance.cellChoseList.Clear();
+            Field.cellChoseList.Clear();
 			Observer.Instance.Notify(EventName.ResetChain);
 			Debug.Log("resetchain");
         }
         else
         {
-			CellField.instance.cellChoseList.Clear();
+			Field.cellChoseList.Clear();
 		}
 	}
 
@@ -256,54 +254,28 @@ public class Cell : NonUIObject
     {
 		if (isMouseHold && Item != null)
         {
-			if (CellField.instance.cellChoseList.Count == 0)
+			if (Field.cellChoseList.Count == 0)
 			{
-				CellField.instance.idChose = Item.id;
-				CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+				Field.idChose = Item.id;
+				Field.cellChoseList.Add(gameObject.GetComponent<Cell>());
 				Observer.Instance.Notify(EventName.AddToChain, this);
-				for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
-				{
-					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
-					{
-						if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
-						{
-							CellField.instance.cellArr[i, j].Item.Highlight();
-						}
-						else if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id != CellField.instance.idChose)
-						{
-							CellField.instance.cellArr[i, j].Item.SetGrayedOut();
-						}
-					}
-				}
+				UpdateCellHighlights();
 			}
 			else
 			{
-				for (int i = 0; i < CellField.instance.cellArr.GetLength(0); i++)
+				UpdateCellHighlights();
+				if (Item.id == Field.idChose && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1])) // ^1 == list[listcount - 1]
 				{
-					for (int j = 0; j < CellField.instance.cellArr.GetLength(1); j++)
-					{
-						if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id == CellField.instance.idChose)
-						{
-							CellField.instance.cellArr[i, j].Item.Highlight();
-						}
-						else if (CellField.instance.cellArr[i, j].Item != null && CellField.instance.cellArr[i, j].Item.id != CellField.instance.idChose)
-						{
-							CellField.instance.cellArr[i, j].Item.SetGrayedOut();
-						}
-					}
-				}
-				if (Item.id == CellField.instance.idChose && !CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
-				{
-					CellField.instance.cellChoseList.Add(gameObject.GetComponent<Cell>());
+					Field.cellChoseList.Add(this);
 					Observer.Instance.Notify(EventName.AddToChain, this);
 				}
-				else if (Item.id == CellField.instance.idChose && CellField.instance.cellChoseList.Count > 1 && CellField.instance.cellChoseList.Contains(this) && IsNeighbour(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]))
+				else if (Item.id == Field.idChose && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
                 {
-					if (CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 2] == this)
+					if (Field.cellChoseList[^2] == this)
 					{
-						CellField.instance.cellChoseList.Remove(CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]);
-						CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1].Item = null;
-						Observer.Instance.Notify(EventName.RemoveFromChain, CellField.instance.cellChoseList[CellField.instance.cellChoseList.Count - 1]);
+						Field.cellChoseList.Remove(Field.cellChoseList[^1]);
+						Field.cellChoseList[^1].Item = null;
+						Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
 					}
 				}
 			}
@@ -330,4 +302,85 @@ public class Cell : NonUIObject
     {
         return null;
     }
+	private void UpdateCellHighlights()
+	{
+		for (int i = 0; i < Field.cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < Field.cellArr.GetLength(0); j++)
+			{
+				if (Field.cellArr[i,j].Item != null)
+				{
+					if (Field.cellArr[i, j].Item.id == Field.idChose)
+					{
+						Field.cellArr[i, j].Item.Highlight();
+					}
+					else
+					{
+						Field.cellArr[i, j].Item.SetGrayedOut();
+					}
+				}
+			}
+		}
+	}
+	private void ResetAllCellHighlights()
+	{
+		for (int i = 0; i < Field.cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < Field.cellArr.GetLength(0); j++)
+			{
+				if (Field.cellArr[i, j].Item != null)
+				{
+					Field.cellArr[i, j].Item.ResetToDefaultLooks();
+				}
+			}
+		}
+	}
+	public void HandleDropPriority()
+	{
+		// Check if the cell below has an item
+		Vector2Int belowPosition = new Vector2Int(Placement.x, Placement.y - 1);
+		Vector2Int belowLeftPosition = new Vector2Int(Placement.x - 1, Placement.y - 1);
+		Vector2Int belowRightPosition = new Vector2Int(Placement.x + 1, Placement.y - 1);
+		if (Field.IsValidPosition(belowPosition))
+		{
+			Cell belowCell = Field.GetCellAt(belowPosition);
+			if (belowCell != null && belowCell.Item == null)
+			{
+				// Drop item to the cell below
+				CellItem itemToDrop = this.Item;
+				this.ClearItem();
+				belowCell.DropItem(itemToDrop);
+				return;  // Item dropped, no further action needed
+			}
+		}
+
+		// If no cell directly below, try dropping to diagonal cells
+		
+		else if (Field.IsValidPosition(belowLeftPosition))
+		{
+			Cell belowLeftCell = Field.GetCellAt(belowLeftPosition);
+			if (belowLeftCell != null && belowLeftCell.Item == null)
+			{
+				CellItem itemToDrop = this.Item;
+				this.ClearItem();
+				belowLeftCell.DropItem(itemToDrop);
+				return;  // Item dropped, no further action needed
+			}
+		}
+
+		
+		else if (Field.IsValidPosition(belowRightPosition))
+		{
+			Cell belowRightCell = Field.GetCellAt(belowRightPosition);
+			if (belowRightCell != null && belowRightCell.Item == null)
+			{
+				CellItem itemToDrop = this.Item;
+				this.ClearItem();
+				belowRightCell.DropItem(itemToDrop);
+				return;  // Item dropped, no further action needed
+			}
+		}
+	}
+
+	
 }

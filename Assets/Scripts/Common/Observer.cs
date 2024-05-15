@@ -10,6 +10,7 @@ namespace QuangDM.Common
         public static readonly string BeginChain = "BeginChain";
         public static readonly string EnterCell = "EnterCell";
         public static readonly string ExitCell = "ExitCell";
+        public static readonly string MatchChain = "MatchChain";
         public static readonly string ResetChain = "ResetChain";
         public static readonly string AddToChain = "AddToChain";
         public static readonly string RemoveFromChain = "RemoveFromChain";
