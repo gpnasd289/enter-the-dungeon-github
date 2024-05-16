@@ -9,11 +9,13 @@ public class CellField : GOManager
     [Serializable]
     public class Element
     {
-        public int ID;
-
         public ComboItems.CellItems CellItem;
 
-        public int MAXAmount;
+		public GameObject Prefab;
+
+		[Range(0f, 100f)] public float Chance = 100f;
+
+		[HideInInspector] public double _weight;
     }
 
     public bool FlowToTheDeepestAdjacentCell;
@@ -81,26 +83,29 @@ public class CellField : GOManager
 
 	public Cell[] ConstraintCells { get; private set; }
 
-	public Cell LastTouchedCell { get; private set; }
+	public Cell LastTouchedCell { get; set; }
 
 	public int CurrentCollectionSize => 0;
 
 	public bool Stacking { get; private set; }
 
 	public bool Shuffling { get; private set; }
-	public List<GameObject> listItemPrefab;
 	public Cell[,] cellArr;
 	public CellItem[,] cellItemArr;
+	public List<Element> listElement;
 	public List<Cell> cellChoseList;
 	public int idChose;
 
-    private void Awake()
+	private double accumulateWeights;
+	private System.Random rand = new System.Random();
+	private void Awake()
     {
 		cellChoseList = new List<Cell>();
 		cellArr = new Cell[cellSize.x, cellSize.y];
 		cellItemArr = new CellItem[cellSize.x, cellSize.y];
 		Width = cellSize.x;
 		Height = cellSize.y;
+		CalcWeights();
 	}
     // Start is called before the first frame update
     void Start()
@@ -129,21 +134,23 @@ public class CellField : GOManager
 					cell.name = $"Cell {x} {y}";
 
 					// Instantiate item
-					GameObject itemPrefab = listItemPrefab[UnityEngine.Random.Range(0, listItemPrefab.Count)];
-					GameObject spawnItem = Instantiate(itemPrefab, cellPosition, Quaternion.identity, itemsGroup);
+					Element itemPrefab = listElement[GetRandomElementIndex()];
+					GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
 					cell.SetItem(spawnItem.GetComponent<CellItem>());
 					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
                     spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
                     spawnItem.name = $"Item {x} {y}";
+					Debug.Log("element: " + itemPrefab.CellItem + " chance: " + itemPrefab.Chance + "%");
 				}
 				else
                 {
 					// Instantiate item drop
-					GameObject itemPrefab = listItemPrefab[UnityEngine.Random.Range(0, listItemPrefab.Count)];
-					GameObject spawnItem = Instantiate(itemPrefab, cellPosition, Quaternion.identity, itemsGroup);
+					Element itemPrefab = listElement[GetRandomElementIndex()];
+					GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
 					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
 					spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
 					spawnItem.name = $"Item {x} {y}";
+					Debug.Log("element: " + itemPrefab.CellItem + " chance: " + itemPrefab.Chance + "%");
 				}
 			}
         }
@@ -152,8 +159,8 @@ public class CellField : GOManager
     {
 		// Instantiate item drop
 		Vector3 cellPosition = new Vector3(x * cellPrefab.transform.localScale.x, y * cellPrefab.transform.localScale.y);
-		GameObject itemPrefab = listItemPrefab[UnityEngine.Random.Range(0, listItemPrefab.Count)];
-		GameObject spawnItem = Instantiate(itemPrefab, cellPosition, Quaternion.identity, itemsGroup);
+		Element itemPrefab = listElement[GetRandomElementIndex()];
+		GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
 		cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
 		spawnItem.name = $"ItemAdd {x} {y}";
 	}
@@ -169,5 +176,25 @@ public class CellField : GOManager
 		}
 		return null;
 	}
-	
+	private void CalcWeights()
+    {
+		accumulateWeights = 0f;
+		foreach(Element ele in listElement)
+        {
+			accumulateWeights += ele.Chance;
+			ele._weight = accumulateWeights;
+        }
+    }
+	private int GetRandomElementIndex()
+    {
+		double r = rand.NextDouble() * accumulateWeights;
+		for (int i = 0; i < listElement.Count; i++)
+        {
+			if (listElement[i]._weight >= r)
+			{
+				return i;
+			}
+		}
+		return 0;
+    }
 }

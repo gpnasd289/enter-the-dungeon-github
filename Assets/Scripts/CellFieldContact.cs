@@ -9,10 +9,15 @@ public class CellFieldContact : NonUIObject
 	protected override void MouseDown()
 	{
 		Debug.Log("mouse down cell field");
+		/*Field.isMouseDown = true;
+		Field.isMouseUp = false;*/
 	}
 
 	protected override void MouseUp()
 	{
+		Debug.Log("mouse up cell field");
+		/*Field.isMouseDown = false;
+		Field.isMouseUp = true;*/
 	}
 
 	protected override void Construct()

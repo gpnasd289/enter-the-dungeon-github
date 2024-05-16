@@ -9,7 +9,7 @@ public class TracingHandler : MonoBehaviour
 {
     public CellField CellField;
 
-    private int MinimumChainLength = 2;
+    //private int MinimumChainLength = 2;
 
     private bool CollectionActive;
 
@@ -126,10 +126,10 @@ public class TracingHandler : MonoBehaviour
             }
         }
 
-        /*if (!CheckBoard())
+        if (CheckBoard() == false)
         {
             DropBoard();
-        }*/
+        }
 
         /*for (int y = 0; y < CellField.Height; y++)
         {

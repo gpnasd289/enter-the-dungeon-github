@@ -6,11 +6,11 @@ public class ComboItems
 {
 	public enum CellItems
 	{
-		Pizza = 0,
-		Chips = 1,
-		Donut = 2,
-		HotDog = 3,
-		Energy = 4
+		Metal = 0,
+		Wood = 1,
+		Water = 2,
+		Fire = 3,
+		Earth = 4
 	}
 
 	public CellItems Item;

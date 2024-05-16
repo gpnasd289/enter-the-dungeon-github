@@ -76,8 +76,6 @@ public class Cell : NonUIObject
 
 	public bool Collectible => false;
 
-	public Vector2 cellId;
-
 	public void Initialize(CellField field, Vector2Int placement)
 	{
 		this.Field = field;
@@ -97,10 +95,10 @@ public class Cell : NonUIObject
 	{
 	}
 
-	public void DropItem(CellItem newItem, Action onComplete = null)
+	public void DropItem(CellItem newItem)
 	{
 		SetItem(newItem);
-		newItem.transform.DOMove(this.transform.position, 0.5f).OnComplete(() => onComplete?.Invoke());
+		newItem.transform.DOMove(this.transform.position, 0.5f);
 	}
 	private bool IsValidDropTarget(Cell targetCell)
 	{
@@ -153,7 +151,7 @@ public class Cell : NonUIObject
 
 	public bool IsNeighbour(Cell cell)
 	{
-		return Mathf.Abs(cell.cellId.x - cellId.x) <= 1 && Mathf.Abs(cell.cellId.y - cellId.y) <= 1;
+		return (Mathf.Abs(cell.Placement.x - this.Placement.x) <= 1 && Mathf.Abs(cell.Placement.y - this.Placement.y) <= 1);
 	}
 	public void EnhanceCollider()
 	{
@@ -176,7 +174,6 @@ public class Cell : NonUIObject
 	private void PuffEffect(bool finisher)
 	{
 	}
-
     protected override void MouseDown()
     {
 		if (Item != null)
@@ -185,44 +182,37 @@ public class Cell : NonUIObject
 			Field.idChose = Item.id;
 			Field.cellChoseList.Add(this);
 			Observer.Instance.Notify(EventName.BeginChain, this);
-			for (int i = 0; i < Field.cellArr.GetLength(0); i++)
-			{
-				for (int j = 0; j < Field.cellArr.GetLength(0); j++)
-				{
-					if (Field.cellArr[i, j].Item != null && Field.cellArr[i, j].Item.id == Field.idChose)
-					{
-						Field.cellArr[i, j].Item.Highlight();
-					}
-					else if (Field.cellArr[i, j].Item != null && Field.cellArr[i, j].Item.id != Field.idChose)
-					{
-						Field.cellArr[i, j].Item.SetGrayedOut();
-					}
-				}
-			}
+			UpdateCellHighlights();
 		}
 	}
 
     protected override void MouseUp()
     {
-		ResetAllCellHighlights();
-		if (Field.cellChoseList.Count >= 2)
-		{
-			Observer.Instance.Notify(EventName.MatchChain);
-			for (int i = 0; i < Field.cellChoseList.Count; i++)
-			{
-				if (Field.cellChoseList[i].Item != null)
-				{
-					Field.cellChoseList[i].Item.Disappear();
-					Field.cellChoseList[i].Item = null;
-				}
-			}
-            Field.cellChoseList.Clear();
-			Observer.Instance.Notify(EventName.ResetChain);
-			Debug.Log("resetchain");
-        }
-        else
+		if (Item != null)
         {
-			Field.cellChoseList.Clear();
+			Debug.Log("mouse up");
+			ResetAllCellHighlights();
+			if (Field.cellChoseList.Count >= 2)
+			{
+				Observer.Instance.Notify(EventName.MatchChain);
+				Field.LastTouchedCell = Field.cellChoseList[^1];
+				for (int i = 0; i < Field.cellChoseList.Count; i++)
+				{
+					if (Field.cellChoseList[i].Item != null)
+					{
+						Field.cellChoseList[i].Item.Disappear();
+						Field.cellChoseList[i].Item = null;
+					}
+				}
+				Field.cellChoseList.Clear();
+				Observer.Instance.Notify(EventName.ResetChain);
+				Debug.Log("resetchain");
+			}
+			else
+			{
+				Field.cellChoseList[0] = null;
+				Field.cellChoseList.Clear();
+			}
 		}
 	}
 
@@ -230,41 +220,47 @@ public class Cell : NonUIObject
     {
 		if (isMouseHold && Item != null)
         {
-			if (Field.cellChoseList.Count == 0)
-			{
+            /*if (Field.cellChoseList.Count == 0)
+            {
+				Debug.Log(Item.name);
 				Field.idChose = Item.id;
-				Field.cellChoseList.Add(gameObject.GetComponent<Cell>());
-				Observer.Instance.Notify(EventName.AddToChain, this);
+                Field.cellChoseList.Add(this);
 				UpdateCellHighlights();
-			}
-			else
+				Observer.Instance.Notify(EventName.BeginChain, this);
+            }*/
+            if (Field.cellChoseList.Count > 0)
 			{
 				UpdateCellHighlights();
 				if (Item.id == Field.idChose && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1])) // ^1 == list[listcount - 1]
 				{
 					Field.cellChoseList.Add(this);
+					Debug.Log("cell add: " + Field.cellChoseList[^1].name);
 					Observer.Instance.Notify(EventName.AddToChain, this);
 				}
 				else if (Item.id == Field.idChose && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
                 {
 					if (Field.cellChoseList[^2] == this)
 					{
+						Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
 						Field.cellChoseList.Remove(Field.cellChoseList[^1]);
-						Field.cellChoseList[^1].Item = null;
+						//Field.cellChoseList[^1] = null;
+						
 						Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
 					}
 				}
 			}
 		}
+		
     }
 
     protected override void MouseExit()
     {
     }
 
-    protected override void MouseOver()
-    {
-    }
+	protected override void MouseOver()
+	{
+		
+	}
 
     protected override void Construct()
     {

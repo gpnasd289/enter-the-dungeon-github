@@ -6,6 +6,7 @@ public class GOManager : MonoBehaviour
 {
     public bool Awoken { get; private set; }
     public bool isMouseHold;
+    public bool isMouseUp;
     protected virtual void Construct()
     {
     }
@@ -31,10 +32,17 @@ public class GOManager : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             isMouseHold = true;
+            isMouseUp = false;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            isMouseHold = false;
+            isMouseUp = true;
         }
         else
         {
             isMouseHold = false;
+            isMouseUp = true;
         }
     }
 }
