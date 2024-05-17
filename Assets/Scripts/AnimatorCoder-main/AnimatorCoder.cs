@@ -11,7 +11,7 @@ namespace SHG.AnimatorCoder
     {
         /// <summary> The baseline animation logic on a specific layer </summary>
         public abstract void DefaultAnimation(int layer);
-        private Animator animator;
+        protected Animator animator;
         private Animations[] currentAnimation;
         private bool[] layerLocked;
         private ParameterDisplay[] parameters;

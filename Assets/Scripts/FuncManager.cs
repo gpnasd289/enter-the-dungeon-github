@@ -10,13 +10,22 @@ public class FuncManager : MonoBehaviour
     {
         instance = this;
     }
-    public void DelayFunc(float time, UnityAction func)
+    public void DelayTimeFunc(float time, UnityAction func)
     {
-        StartCoroutine(IEDelayFunc(time, func));
+        StartCoroutine(IEDelayTimeFunc(time, func));
     }
-    private IEnumerator IEDelayFunc(float time, UnityAction func)
+    public void DelayFunc(bool check, UnityAction func)
+    {
+        StartCoroutine(IEDelayFunc(check, func));
+    }
+    private IEnumerator IEDelayTimeFunc(float time, UnityAction func)
     {
         yield return new WaitForSeconds(time);
         func?.Invoke();
+    }
+    private IEnumerator IEDelayFunc(bool check, UnityAction funcRun)
+    {
+        yield return new WaitUntil(() => check);
+        funcRun?.Invoke();
     }
 }
