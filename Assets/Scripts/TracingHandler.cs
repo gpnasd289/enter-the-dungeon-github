@@ -22,6 +22,7 @@ public class TracingHandler : MonoBehaviour
 
     public int count = 0;
     public bool BeingProcessed { get; }
+    private List<Cell> matchedList = new List<Cell>(); 
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +32,12 @@ public class TracingHandler : MonoBehaviour
 
     private void MatchChain(object cell)
     {
-        HandleMatch(CellField.cellChoseList);
+        List<Cell> temp = (List<Cell>)cell;
+        foreach(Cell c in temp)
+        {
+            matchedList.Add(c);
+        }
+        HandleMatch(matchedList);
         
     }
 
@@ -48,12 +54,20 @@ public class TracingHandler : MonoBehaviour
     public void HandleMatch(List<Cell> matchedCells)
     {
         float flyDelay = 0f;
-        foreach (Cell cell in matchedCells)
+        for (int i = 0; i < matchedCells.Count - 1; i++)
         {
-            cell.Item.FlyToPlayer(flyDelay, DropBoard);
-            cell.ClearItem();
-            flyDelay += 0.1f;  // Add delay between each fly animation
+            int async = i;
+            matchedCells[async].Item.FlyToPlayer(flyDelay, DropBoard);
+            matchedCells[async].ClearItem();
+            flyDelay += 0.1f;
         }
+        matchedCells[^1].Item.FlyToPlayer(flyDelay, () => {
+            Observer.Instance.Notify(EventName.DoAnim, matchedCells);
+            matchedCells.Clear();
+            DropBoard();
+        });
+        //matchedCells[^1].ClearItem();
+        flyDelay += 0.1f;
     }
     public void DropBoard()
     {

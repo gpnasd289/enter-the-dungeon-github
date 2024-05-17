@@ -8,6 +8,9 @@ namespace SHG.AnimatorCoder
     {
         //Change the list below to your animation state names
         IDLE,
+        LEGATK,
+        SWORDLEFTATK,
+        SWORDRIGHTATK,
         DOUBLEATK,
         SWEEPATK,
         SPINATK,
@@ -18,8 +21,7 @@ namespace SHG.AnimatorCoder
     public enum Parameters
     {
         //Change the list below to your animator parameters
-        GROUNDED,
-        FALLING
+        
     }
 }
 

@@ -194,7 +194,7 @@ public class Cell : NonUIObject
 			ResetAllCellHighlights();
 			if (Field.cellChoseList.Count >= 2)
 			{
-				Observer.Instance.Notify(EventName.MatchChain);
+				Observer.Instance.Notify(EventName.MatchChain, Field.cellChoseList);
 				Field.LastTouchedCell = Field.cellChoseList[^1];
 				for (int i = 0; i < Field.cellChoseList.Count; i++)
 				{

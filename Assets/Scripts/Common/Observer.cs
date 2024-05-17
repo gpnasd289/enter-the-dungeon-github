@@ -14,6 +14,7 @@ namespace QuangDM.Common
         public static readonly string ResetChain = "ResetChain";
         public static readonly string AddToChain = "AddToChain";
         public static readonly string RemoveFromChain = "RemoveFromChain";
+        public static readonly string DoAnim = "DoAnim";
     }
     public class Observer : MonoBehaviour
     {

@@ -93,6 +93,7 @@ public class CellField : GOManager
 	public Cell[,] cellArr;
 	public CellItem[,] cellItemArr;
 	public List<Element> listElement;
+	[SerializeField]
 	public List<Cell> cellChoseList;
 	public int idChose;
 

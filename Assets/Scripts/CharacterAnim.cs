@@ -7,25 +7,70 @@ using System;
 
 public class CharacterAnim : AnimatorCoder
 {
+    public List<Cell> matchedCells = new List<Cell>();
+    private System.Random rand = new System.Random();
     // Start is called before the first frame update
     void Start()
     {
         Initialize();
-        Observer.Instance.AddObserver(EventName.MatchChain, MatchChain);
+        Observer.Instance.AddObserver(EventName.DoAnim, DoAnim);
     }
 
-    private void MatchChain(object data)
+    private void DoAnim(object data)
     {
-        throw new NotImplementedException();
+        List<Cell> temp = (List<Cell>)data;
+        foreach (Cell c in temp)
+        {
+            matchedCells.Add(c);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        DefaultAnimation(0);
     }
     public override void DefaultAnimation(int layer)
     {
-        throw new System.NotImplementedException();
+        if (matchedCells.Count < 2)
+        {
+            Play(new(Animations.IDLE, true, new()));
+        }
+        else if (matchedCells.Count == 2)
+        {
+            Play(new(RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true)));
+        }
+        else if (matchedCells.Count == 3)
+        {
+            Play(new(RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true, new(
+                     RandomEnumValue<Animations>(1, 4), true))));
+        }
+        else if (matchedCells.Count == 4)
+        {
+            Play(new(RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true, new(
+                     RandomEnumValue<Animations>(1, 4), true)))));
+        }
+        else if (matchedCells.Count == 5)
+        {
+            Play(new(RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true, new(
+                    RandomEnumValue<Animations>(1, 4), true, new(
+                     RandomEnumValue<Animations>(1, 4), true))))));
+        }
+        else
+        {
+            Play(new(RandomEnumValue<Animations>(1, 4), true, new()));
+            Play(new(RandomEnumValue<Animations>(5, 7), true, new()));
+        }
+    }
+    public Animations RandomEnumValue<Animations>(int min, int max)
+    {
+        var v = Enum.GetValues(typeof(Animations));
+        return (Animations) v.GetValue(rand.Next(min, max));
     }
 }
