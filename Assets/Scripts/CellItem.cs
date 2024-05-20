@@ -47,7 +47,10 @@ public class CellItem : GOManager
     public void FlyToPlayer(float flyDelay, Action onComplete)
     {
         DisableMaskInteraction();
-        icon.transform.DOMove(new Vector3(1,11,0), 1f).SetDelay(flyDelay).OnComplete(() => onComplete?.Invoke());
+        icon.transform.DOMove(new Vector3(1,11,0), 1f).SetDelay(flyDelay).OnComplete(() => { 
+            gameObject.SetActive(false);
+            onComplete?.Invoke(); 
+        });
     }
     public void Disappear()
     {

@@ -54,20 +54,26 @@ public class TracingHandler : MonoBehaviour
     public void HandleMatch(List<Cell> matchedCells)
     {
         float flyDelay = 0f;
-        for (int i = 0; i < matchedCells.Count - 1; i++)
+        for (int i = 0; i < matchedCells.Count; i++)
         {
             int async = i;
-            matchedCells[async].Item.FlyToPlayer(flyDelay, DropBoard);
-            matchedCells[async].ClearItem();
-            flyDelay += 0.1f;
+            if (i < matchedCells.Count - 1)
+            {
+                matchedCells[async].Item.FlyToPlayer(flyDelay, DropBoard);
+                matchedCells[async].ClearItem();
+                flyDelay += 0.1f;
+            }
+            else
+            {
+                matchedCells[async].Item.FlyToPlayer(flyDelay, () => {
+                    Observer.Instance.Notify(EventName.DoAnim, matchedCells);
+                    matchedCells.Clear();
+                    DropBoard();
+                });
+                matchedCells[async].ClearItem();
+                flyDelay += 0.1f;
+            }
         }
-        matchedCells[^1].Item.FlyToPlayer(flyDelay, () => {
-            Observer.Instance.Notify(EventName.DoAnim, matchedCells);
-            matchedCells.Clear();
-            DropBoard();
-        });
-        //matchedCells[^1].ClearItem();
-        flyDelay += 0.1f;
     }
     public void DropBoard()
     {
