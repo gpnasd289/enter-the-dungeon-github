@@ -2,11 +2,16 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CellItem : GOManager
 {
     public int id;
+
+    public bool isSpecial;
+
+    public TextMeshPro multiplyTxt;
 
     public Color glowColor;
 

@@ -112,8 +112,18 @@ public class Cell : NonUIObject
 	{
 	}
 
-	public void PopItem()
+	public void PopItem(int multiply)
 	{
+		GameObject spawnItem = Instantiate(Field.cellSPItemPrefab, this.transform.position, Quaternion.identity, Field.itemsGroup);
+		Field.cellItemArr[Placement.x, Placement.y] = spawnItem.GetComponent<CellItem>();
+		this.Item = Field.cellItemArr[Placement.x, Placement.y];
+		Item.Placement = new Vector2Int(Placement.x, Placement.y);
+		Item.name = $"Item SP {Placement.x} {Placement.y}";
+		Item.multiplyTxt.sortingLayerID = SortingLayer.NameToID("Obj Visual");
+		Item.multiplyTxt.sortingOrder = 3;
+		Item.multiplyTxt.text = "x" + multiply;
+		Item.transform.localScale = Vector3.zero;
+		Item.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f);
 	}
 
 	public void SetActive(bool doSet)
@@ -353,6 +363,11 @@ public class Cell : NonUIObject
 			}
 		}
 	}
-
+	[Button]
+	public void DebugNameAndItem()
+    {
+		Debug.Log(this.name);
+		Debug.Log(this.Item.name);
+    }
 	
 }

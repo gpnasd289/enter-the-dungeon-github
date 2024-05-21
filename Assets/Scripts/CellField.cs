@@ -49,7 +49,7 @@ public class CellField : GOManager
 	private Transform cellsGroup;
 
 	[SerializeField]
-	private Transform itemsGroup;
+	public Transform itemsGroup;
 
 	[SerializeField]
 	private Transform Mask;
@@ -99,6 +99,7 @@ public class CellField : GOManager
 
 	private double accumulateWeights;
 	private System.Random rand = new System.Random();
+	public GameObject cellSPItemPrefab;
 	private void Awake()
     {
 		cellChoseList = new List<Cell>();
