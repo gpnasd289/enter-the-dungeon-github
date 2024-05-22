@@ -32,18 +32,18 @@ public class TracingHandler : MonoBehaviour
 
     private void MatchChain(object cell)
     {
-        List<Cell> temp = (List<Cell>)cell;
-        foreach(Cell c in temp)
+        //List<Cell> temp = (List<Cell>)cell;
+        matchedList = new List<Cell>(); 
+        foreach (Cell c in CellField.cellChoseList)
         {
             matchedList.Add(c);
         }
         HandleMatch(matchedList);
-        
     }
 
     private void ResetChain(object cell)
     {
-        //DropBoard();
+        CellField.isContainSpecial = false;
     }
 
     // Update is called once per frame
@@ -57,13 +57,13 @@ public class TracingHandler : MonoBehaviour
         for (int i = 0; i < matchedCells.Count; i++)
         {
             int async = i;
-            if (i < matchedCells.Count - 1)
+            if (i < matchedCells.Count - 1 && matchedCells.Count < 4)
             {
                 matchedCells[async].Item.FlyToPlayer(flyDelay, DropBoard);
                 matchedCells[async].ClearItem();
                 flyDelay += 0.1f;
             }
-            else
+            else if (i == matchedCells.Count - 1 && matchedCells.Count >= 4)
             {
                 matchedCells[async].Item.FlyToPlayer(flyDelay, () => {
                     Observer.Instance.Notify(EventName.DoAnim, matchedCells);

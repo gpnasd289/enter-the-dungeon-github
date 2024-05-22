@@ -11,6 +11,8 @@ public class CellItem : GOManager
 
     public bool isSpecial;
 
+    public int multiply;
+
     public TextMeshPro multiplyTxt;
 
     public Color glowColor;
@@ -52,15 +54,35 @@ public class CellItem : GOManager
     public void FlyToPlayer(float flyDelay, Action onComplete)
     {
         DisableMaskInteraction();
-        icon.transform.DOMove(new Vector3(1,11,0), 1f).SetDelay(flyDelay).OnComplete(() => onComplete?.Invoke());
+        icon.transform.DOMove(new Vector3(1,11,0), 1f).SetDelay(flyDelay).OnComplete(() => {
+            this.gameObject.SetActive(false);
+            onComplete?.Invoke();
+        });
     }
     public void Disappear()
     {
         icon.transform.DOScale(Vector3.zero, 0.5f);
         icon.gameObject.SetActive(false);
     }
-    public void PopItem()
+    public void PopItem(int multiple)
     {
+        if (multiple >= 4 && multiple < 6)
+        {
+            multiply = 3;
+        }
+        else if (multiple >= 6 && multiple < 9)
+        {
+            multiply = 5;
+        }
+        else if (multiple >= 9)
+        {
+            multiply = 9;
+        }
+        multiplyTxt.sortingLayerID = SortingLayer.NameToID("Obj Visual");
+        multiplyTxt.sortingOrder = 3;
+        multiplyTxt.text = "x" + multiply;
+        transform.localScale = Vector3.zero;
+        transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f);
     }
 
     public virtual void DisableMaskInteraction()

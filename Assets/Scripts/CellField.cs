@@ -100,6 +100,7 @@ public class CellField : GOManager
 	private double accumulateWeights;
 	private System.Random rand = new System.Random();
 	public GameObject cellSPItemPrefab;
+	public bool isContainSpecial;
 	private void Awake()
     {
 		cellChoseList = new List<Cell>();
@@ -187,6 +188,18 @@ public class CellField : GOManager
 			ele._weight = accumulateWeights;
         }
     }
+	public bool CheckSpecialContain()
+    {
+		foreach (Cell c in cellChoseList)
+        {
+			if (c.Item.isSpecial)
+            {
+				return true;
+            }
+			return false;
+        }
+		return false;
+	}
 	private int GetRandomElementIndex()
     {
 		double r = rand.NextDouble() * accumulateWeights;

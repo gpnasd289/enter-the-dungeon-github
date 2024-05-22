@@ -5,8 +5,8 @@ using UnityEngine;
 public class GOManager : MonoBehaviour
 {
     public bool Awoken { get; private set; }
-    public bool isMouseHold;
-    public bool isMouseUp;
+    protected bool isMouseHold;
+    protected bool isMouseUp;
     protected virtual void Construct()
     {
     }

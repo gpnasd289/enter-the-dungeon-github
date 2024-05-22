@@ -119,11 +119,7 @@ public class Cell : NonUIObject
 		this.Item = Field.cellItemArr[Placement.x, Placement.y];
 		Item.Placement = new Vector2Int(Placement.x, Placement.y);
 		Item.name = $"Item SP {Placement.x} {Placement.y}";
-		Item.multiplyTxt.sortingLayerID = SortingLayer.NameToID("Obj Visual");
-		Item.multiplyTxt.sortingOrder = 3;
-		Item.multiplyTxt.text = "x" + multiply;
-		Item.transform.localScale = Vector3.zero;
-		Item.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f);
+		Item.PopItem(multiply);
 	}
 
 	public void SetActive(bool doSet)
@@ -202,11 +198,27 @@ public class Cell : NonUIObject
         {
 			Debug.Log("mouse up");
 			ResetAllCellHighlights();
-			if (Field.cellChoseList.Count >= 2)
+			if (Field.cellChoseList.Count >= 2 && Field.cellChoseList.Count < 4)
 			{
-				Observer.Instance.Notify(EventName.MatchChain, Field.cellChoseList);
+				Observer.Instance.Notify(EventName.MatchChain);
 				Field.LastTouchedCell = Field.cellChoseList[^1];
 				for (int i = 0; i < Field.cellChoseList.Count; i++)
+				{
+					if (Field.cellChoseList[i].Item != null)
+					{
+						Field.cellChoseList[i].Item.Disappear();
+						Field.cellChoseList[i].Item = null;
+					}
+				}
+				Field.cellChoseList.Clear();
+				Observer.Instance.Notify(EventName.ResetChain);
+				Debug.Log("resetchain");
+			}
+			else if (Field.cellChoseList.Count >= 4)
+            {
+				Observer.Instance.Notify(EventName.MatchChain, Field.cellChoseList.Count);
+				Field.LastTouchedCell = Field.cellChoseList[^1];
+				for (int i = 0; i < Field.cellChoseList.Count - 1; i++)
 				{
 					if (Field.cellChoseList[i].Item != null)
 					{
@@ -247,6 +259,13 @@ public class Cell : NonUIObject
 					Debug.Log("cell add: " + Field.cellChoseList[^1].name);
 					Observer.Instance.Notify(EventName.AddToChain, this);
 				}
+				else if (Item.isSpecial && !Field.isContainSpecial && IsNeighbour(Field.cellChoseList[^1]))
+                {
+					Field.cellChoseList.Add(this);
+					Field.isContainSpecial = true;
+					Debug.Log("cell add: " + Field.cellChoseList[^1].name);
+					Observer.Instance.Notify(EventName.AddToChain, this);
+				}
 				else if (Item.id == Field.idChose && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
                 {
 					if (Field.cellChoseList[^2] == this)
@@ -255,6 +274,17 @@ public class Cell : NonUIObject
 						Field.cellChoseList.Remove(Field.cellChoseList[^1]);
 						//Field.cellChoseList[^1] = null;
 						
+						Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
+					}
+				}
+				else if (Item.isSpecial && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+				{
+					if (Field.cellChoseList[^2] == this)
+					{
+						Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
+						Field.cellChoseList.Remove(Field.cellChoseList[^1]);
+						//Field.cellChoseList[^1] = null;
+						Field.isContainSpecial = false;
 						Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
 					}
 				}
@@ -290,9 +320,9 @@ public class Cell : NonUIObject
 		{
 			for (int j = 0; j < Field.cellArr.GetLength(0); j++)
 			{
-				if (Field.cellArr[i,j].Item != null)
+				if (Field.cellArr[i, j].Item != null)
 				{
-					if (Field.cellArr[i, j].Item.id == Field.idChose)
+					if (Field.cellArr[i, j].Item.id == Field.idChose || Field.cellArr[i,j].Item.isSpecial)
 					{
 						Field.cellArr[i, j].Item.Highlight();
 					}
@@ -314,52 +344,6 @@ public class Cell : NonUIObject
 				{
 					Field.cellArr[i, j].Item.ResetToDefaultLooks();
 				}
-			}
-		}
-	}
-	public void HandleDropPriority()
-	{
-		// Check if the cell below has an item
-		Vector2Int belowPosition = new Vector2Int(Placement.x, Placement.y - 1);
-		Vector2Int belowLeftPosition = new Vector2Int(Placement.x - 1, Placement.y - 1);
-		Vector2Int belowRightPosition = new Vector2Int(Placement.x + 1, Placement.y - 1);
-		if (Field.IsValidPosition(belowPosition))
-		{
-			Cell belowCell = Field.GetCellAt(belowPosition);
-			if (belowCell != null && belowCell.Item == null)
-			{
-				// Drop item to the cell below
-				CellItem itemToDrop = this.Item;
-				this.ClearItem();
-				belowCell.DropItem(itemToDrop);
-				return;  // Item dropped, no further action needed
-			}
-		}
-
-		// If no cell directly below, try dropping to diagonal cells
-		
-		else if (Field.IsValidPosition(belowLeftPosition))
-		{
-			Cell belowLeftCell = Field.GetCellAt(belowLeftPosition);
-			if (belowLeftCell != null && belowLeftCell.Item == null)
-			{
-				CellItem itemToDrop = this.Item;
-				this.ClearItem();
-				belowLeftCell.DropItem(itemToDrop);
-				return;  // Item dropped, no further action needed
-			}
-		}
-
-		
-		else if (Field.IsValidPosition(belowRightPosition))
-		{
-			Cell belowRightCell = Field.GetCellAt(belowRightPosition);
-			if (belowRightCell != null && belowRightCell.Item == null)
-			{
-				CellItem itemToDrop = this.Item;
-				this.ClearItem();
-				belowRightCell.DropItem(itemToDrop);
-				return;  // Item dropped, no further action needed
 			}
 		}
 	}

@@ -18971,7 +18971,6 @@ Transform:
   - {fileID: 4783608971706159}
   - {fileID: 4991670002204865}
   - {fileID: 4825841707445542}
-  - {fileID: 5256501760932621600}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!114 &8889401491633193772
@@ -18990,6 +18989,7 @@ MonoBehaviour:
   isMouseUp: 0
   id: 5
   isSpecial: 1
+  multiply: 0
   multiplyTxt: {fileID: 3622306431384743056}
   glowColor: {r: 0, g: 0, b: 0, a: 0}
   particleColor: {r: 0, g: 0, b: 0, a: 0}
@@ -35296,6 +35296,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4584673879208066}
+  - {fileID: 5256501760932621600}
   m_Father: {fileID: 4922980881900322}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!212 &212748704595056705
@@ -47061,7 +47062,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 4922980881900322}
+  m_Father: {fileID: 4552134691557591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

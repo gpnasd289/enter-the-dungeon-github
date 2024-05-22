@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerAnim : MonoBehaviour
 {
     private readonly System.Random rand = new System.Random();
+    public Player playerHandle;
     private Animator anim;
     public int atkTime;
     public int randIndex;
@@ -34,11 +35,13 @@ public class PlayerAnim : MonoBehaviour
     }
     public void OnAnimFinish()
     {
+        playerHandle.DealDamageToEnemy();
         atkTime--;
         randIndex = randomIntExcept(0, 3, randIndex);
         anim.SetInteger("AtkIndex", randIndex);
         anim.SetInteger("AtkTime", atkTime);
     }
+
     public int randomIntExcept(int min, int max, int except)
     {
         int random = except;
