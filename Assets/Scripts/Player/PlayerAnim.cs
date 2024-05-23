@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAnim : MonoBehaviour
+public class PlayerAnim : MonoBehaviour, IAnimatable
 {
     private readonly System.Random rand = new System.Random();
     public Player playerHandle;
@@ -15,10 +15,10 @@ public class PlayerAnim : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        Observer.Instance.AddObserver(EventName.DoAnim, DoAnim);
+        
     }
 
-    private void DoAnim(object data)
+    /*private void DoAnim(object data)
     {
         List<Cell> temp = (List<Cell>)data;
         atkTime = temp.Count;
@@ -26,20 +26,33 @@ public class PlayerAnim : MonoBehaviour
         anim.SetTrigger("Atk");
         anim.SetInteger("AtkIndex", randIndex);
         anim.SetInteger("AtkTime", atkTime);
-    }
-
-    // Update is called once per frame
-    void Update()
+    }*/
+    public void PlayAttackAnimation(int attackCount)
     {
-        
+        atkTime = attackCount;
+        randIndex = rand.Next(0, 3);
+        anim.SetTrigger("Atk");
+        anim.SetInteger("AtkIndex", randIndex);
+        anim.SetInteger("AtkTime", atkTime);
     }
     public void OnAnimFinish()
     {
-        playerHandle.DealDamageToEnemy();
-        atkTime--;
-        randIndex = randomIntExcept(0, 3, randIndex);
-        anim.SetInteger("AtkIndex", randIndex);
-        anim.SetInteger("AtkTime", atkTime);
+        
+        if (atkTime > 0)
+        {
+            atkTime--;
+            randIndex = randomIntExcept(0, 3, randIndex);
+            anim.SetInteger("AtkIndex", randIndex);
+            anim.SetInteger("AtkTime", atkTime);
+            CombatManager.Instance.OnPlayerAnimationComplete();
+        }
+        if (atkTime == 0)
+        {
+            anim.SetInteger("AtkTime", atkTime);
+            playerHandle.MakeMove(() => CombatManager.Instance.EnemyAttack(CombatManager.Instance.atkTime));
+            playerHandle.CompleteMove();
+        }
+        
     }
 
     public int randomIntExcept(int min, int max, int except)

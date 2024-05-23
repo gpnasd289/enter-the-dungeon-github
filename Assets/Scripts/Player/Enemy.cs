@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,28 +8,43 @@ public class Enemy : PlayerBase
 	public int Level { get; private set; }
 
 	public int atk;
+
 	public int maxHealth;
+	
 	public int currentHealth;
-	public HealthBar enemyHealthBar;
-	public HealthBar playerHealthBar;
-	private void Start()
-    {
-		
-    }
-    public void Setup(int currentLevel)
+	//public HealthBar healthBar;
+	public EnemyAnim enemyAnim;
+
+	public void Initialize()
 	{
-		atk += currentLevel;
-		SetHealth(maxHealth);
-		HealthCapacity = maxHealth;
+		// Initialize enemy-specific data
+		SetHealth(currentHealth, maxHealth);
 		SetAlive(true);
+		UpdateHealthBar();
 	}
-
-	public override void DealDamage(int damageCount, bool canSurvive = false)
+	public void DealDamageToPlayer(Player player)
 	{
-		base.DealDamage(damageCount, canSurvive);
-		enemyHealthBar.health = Health;
+		Debug.Log("deal " + atk + " damage to " + player.name);
+		int damage = CalculateDamage(); // Implement your damage calculation logic
+		player.TakeDamage(damage);
+		OnDamageDealth?.Invoke();
 	}
 
+    private int CalculateDamage()
+    {
+		return atk;
+    }
+
+	/*public void MakeMove(Action onMoveComplete)
+	{
+		enemyAnim.PlayAttackAnimation(1); // Adjust attack count as needed
+		CompleteMoveAction = onMoveComplete;
+	}
+
+	protected void CompleteMove()
+	{
+		CompleteMoveAction?.DynamicInvoke();
+	}*/
 	/*public override void BindCharacter(Character character)
 	{
 	}*/

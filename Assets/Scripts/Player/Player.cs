@@ -10,10 +10,10 @@ public class Player : PlayerBase
 	public float DelayAfterGrowth;
 
 	public int atk;
+	
 	public int maxHealth;
+
 	public int currentHealth;
-	public HealthBar playerHealthBar;
-	public HealthBar enemyHealthBar;
 
 	private int ShuffleMovesLeft;
 
@@ -30,17 +30,35 @@ public class Player : PlayerBase
 		{
 		}
 	}
-	public void DealDamageToEnemy()
-	{ // Example damage range
-		enemyHealthBar.health -= atk;
+	//public HealthBar healthBar;
+	public PlayerAnim playerAnim;
 
-		if (enemyHealthBar.health <= 0)
-		{
-			//OnComboEndAction?.Invoke();
-			levelManager.GenerateEnemy();
-		}
+	public void Initialize()
+	{
+		// Initialize enemy-specific data
+		SetHealth(currentHealth, maxHealth);
+		SetAlive(true);
+		UpdateHealthBar();
 	}
-	public void EquipWeapon(int index)
+	public void DealDamageToEnemy(Enemy enemy)
+	{
+		int damage = CalculateDamage(); // Implement your damage calculation logic
+		enemy.TakeDamage(damage);
+		OnDamageDealth?.Invoke();
+	}
+
+    private int CalculateDamage()
+    {
+		return atk;
+    }
+
+    public override void MakeMove(Action onMoveComplete)
+    {
+        //playerAnim.PlayAttackAnimation(1); // Adjust attack count as needed
+        CompleteMoveAction = onMoveComplete;
+    }
+
+    public void EquipWeapon(int index)
 	{
 	}
 

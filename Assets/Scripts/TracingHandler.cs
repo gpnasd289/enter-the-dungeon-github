@@ -63,6 +63,16 @@ public class TracingHandler : MonoBehaviour
                 matchedCells[async].ClearItem();
                 flyDelay += 0.1f;
             }
+            else if (i == matchedCells.Count - 1 && matchedCells.Count < 4)
+            {
+                matchedCells[async].Item.FlyToPlayer(flyDelay, () => {
+                    Observer.Instance.Notify(EventName.DoAnim, matchedCells);
+                    matchedCells.Clear();
+                    DropBoard();
+                });
+                matchedCells[async].ClearItem();
+                flyDelay += 0.1f;
+            }
             else if (i == matchedCells.Count - 1 && matchedCells.Count >= 4)
             {
                 matchedCells[async].Item.FlyToPlayer(flyDelay, () => {

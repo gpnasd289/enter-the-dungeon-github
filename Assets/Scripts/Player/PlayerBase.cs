@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class PlayerBase : GOManager
+public class PlayerBase : GOManager, IHealth
 {
 	public delegate void GeneralEvent(PlayerBase player);
 
@@ -20,9 +20,9 @@ public class PlayerBase : GOManager
 
 	public float PauseAfterFightWon;
 
-	public Color LogColor;
+	protected Delegate CompleteMoveAction;
 
-	private Delegate CompleteMoveAction;
+	public HealthBar healthBar;
 
 	public string Name { get; private set; }
 
@@ -111,9 +111,10 @@ public class PlayerBase : GOManager
 		Name = name;
 		onNameChange?.Invoke(this);
 	}
-	public void SetHealth(int health)
+	public void SetHealth(int health, int maxHealth)
 	{
 		Health = health;
+		HealthCapacity = maxHealth;
 	}
 	public void SetAlive(bool alive)
 	{
@@ -124,18 +125,42 @@ public class PlayerBase : GOManager
 		int oldHealth = Health;
 		Health = Mathf.Clamp(Health + health, 0, HealthCapacity);
         onHeal?.Invoke(this, oldHealth);
+		UpdateHealthBar();
 	}
-
-	public void Damage(int damage, bool canSurvive = false)
+	public virtual void TakeDamage(int damageCount, bool canSurvive = false)
 	{
+		int oldHealth = Health;
+		if (Health < damageCount)
+        {
+			OverKillAmount = damageCount - Health;
+        }
+        else
+        {
+			Health -= damageCount;
+			Health = Mathf.Clamp(Health, 0, HealthCapacity);
+			onDamage?.Invoke(this, oldHealth);
+		}
+		
+		if (Health <= 0)
+		{
+			Kill();
+		}
+		UpdateHealthBar();
 	}
 
 	public void Kill()
 	{
 		Alive = false;
-		onDeath?.Invoke(this);
+		//onDeath?.Invoke(this);
+		//CombatManager.Instance.OnEnemyDefeated();
 	}
-
+	public void UpdateHealthBar()
+	{
+		if (healthBar != null)
+		{
+			healthBar.health = Health;
+		}
+	}
 	public float GetNormalHealth()
 	{
 		return 0f;
@@ -157,29 +182,28 @@ public class PlayerBase : GOManager
 	{
 	}
 
-	public void MakeMove(Action onMoveComplete)
+	public virtual void MakeMove(Action onMoveComplete)
 	{
 	}
 
-	protected void CompleteMove()
+	public virtual void CompleteMove()
 	{
+		if (CombatManager.Instance.currentEnemy.Alive)
+        {
+			CompleteMoveAction?.DynamicInvoke();
+			CompleteMoveAction = null;
+		}
+        else
+        {
+			CombatManager.Instance.OnEnemyDefeated();
+		}
 	}
 
 	/*public virtual void BindCharacter(Character character)
 	{
 	}*/
 
-	public virtual void DealDamage(int damageCount, bool canSurvive = false)
-	{
-		int oldHealth = Health;
-		Health -= damageCount;
-		Health = Mathf.Clamp(Health, 0, HealthCapacity);
-		onDamage?.Invoke(this, oldHealth);
-		if (Health <= 0 && !canSurvive)
-		{
-			Kill();
-		}
-	}
+	
 
 	protected virtual void OnMove()
 	{

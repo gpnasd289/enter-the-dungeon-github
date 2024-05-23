@@ -1713,7 +1713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 268834862361013138}
   - component: {fileID: 8611394712987768865}
-  - component: {fileID: 1409348293229175638}
+  - component: {fileID: 1308204832462305243}
   - component: {fileID: 5173600665940122541}
   m_Layer: 0
   m_Name: Enemy
@@ -1753,7 +1753,7 @@ Animator:
   m_GameObject: {fileID: 6387409961590423973}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 88bd7066c4091c348b78835fe32a8dc4, type: 2}
+  m_Controller: {fileID: 9100000, guid: e86bc343561891243a50016c25da3f35, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1764,7 +1764,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1409348293229175638
+--- !u!114 &1308204832462305243
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1773,10 +1773,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6387409961590423973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474707623a2758a41bb80dda902a5e71, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b0c66043c9eb5a42a5d524586fed0f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHandle: {fileID: 0}
+  enemyHandle: {fileID: 5173600665940122541}
   atkTime: 0
   randIndex: 0
 --- !u!114 &5173600665940122541
@@ -1793,12 +1793,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PauseAfterMove: 0
   PauseAfterFightWon: 0
-  LogColor: {r: 0, g: 0, b: 0, a: 0}
   atk: 10
   maxHealth: 100
   currentHealth: 100
-  enemyHealthBar: {fileID: 0}
-  playerHealthBar: {fileID: 0}
+  healthBar: {fileID: 0}
+  enemyAnim: {fileID: 1308204832462305243}
 --- !u!1 &6451552372906961668
 GameObject:
   m_ObjectHideFlags: 0
