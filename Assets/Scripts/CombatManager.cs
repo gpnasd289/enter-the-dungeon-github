@@ -1,3 +1,4 @@
+using DG.Tweening;
 using QuangDM.Common;
 using System;
 using System.Collections;
@@ -17,8 +18,9 @@ public class CombatManager : MonoBehaviour
     public int enemiesPerLevel = 4; // Number of enemies per level
     public Enemy currentEnemy;
     public HealthBar enemyHealthBar;
+    public CellField Field;
     public int atkTime;
-
+    public int multipleDmg = 1;
     void Awake()
     {
         Instance = this;
@@ -30,6 +32,9 @@ public class CombatManager : MonoBehaviour
         player.Initialize();
         
         SpawnEnemy();
+
+        
+
         Observer.Instance.AddObserver(EventName.DoAnim, DoAnim);
     }
 
@@ -52,26 +57,33 @@ public class CombatManager : MonoBehaviour
         //currentEnemy.SetAttackParameters(attackCount, damage);
     }
 
-    public void OnPlayerAnimationComplete()
+    public void OnPlayerAnimationComplete(int atkTime)
     {
-        player.DealDamageToEnemy(currentEnemy);
+        player.DealDamageToEnemy(currentEnemy, atkTime);
     }
 
     public void OnEnemyAnimationComplete()
     {
         Debug.Log("anim enemy complete");
         currentEnemy.DealDamageToPlayer(player);
+        currentEnemy.OnTurnEnd += Field.ResetAllHighlightAndCol;
     }
 
     public void OnEnemyDefeated()
     {
         Debug.Log("Enemy Defeated");
         enemiesDefeated++;
-        Destroy(currentEnemy.gameObject);
 
+        
         if (enemiesDefeated < enemiesPerLevel)
         {
-            SpawnEnemy();
+            currentEnemy.OnTurnEnd -= Field.ResetAllHighlightAndCol;
+            currentEnemy.transform.DOScale(0f, 1f).OnComplete(() => {
+                Destroy(currentEnemy.gameObject);
+                SpawnEnemy();
+                UIManager.Instance.enemyCountSld.value++;
+                Field.ResetAllHighlightAndCol();
+            });
             //MovePlayerToNextEnemy();
         }
         else
@@ -91,9 +103,12 @@ public class CombatManager : MonoBehaviour
     {
         Debug.Log("spawn enemy");
         currentEnemy = Instantiate(enemyPrefab, enemySpawnPoint);
+        currentEnemy.OnDamageDealth += UIManager.Instance.FloatingTxtPlayer;
         enemyAnim = currentEnemy.enemyAnim;
         currentEnemy.healthBar = enemyHealthBar;
         currentEnemy.Initialize();
+        currentEnemy.transform.localScale = Vector3.zero;
+        currentEnemy.transform.DOScale(1f, 1f).OnComplete(() => currentEnemy.OnTurnEnd += Field.ResetAllHighlightAndCol);
         //currentEnemy.Initialize(); // Assuming an Initialize method to set up the enemy
     }
 

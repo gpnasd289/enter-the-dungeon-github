@@ -12,7 +12,7 @@ public class PlayerBase : GOManager, IHealth
 
 	//public Character Character;
 
-	public Action OnDamageDealth;
+	public Action<int> OnDamageDealth;
 
 	public Action OnComboEndAction;
 
@@ -75,8 +75,8 @@ public class PlayerBase : GOManager, IHealth
 		}
 	}
 
-	private GeneralEvent onDeath;
-	public event GeneralEvent OnDeath
+	private Action onDeath;
+	public event Action OnDeath
 	{
 		add
 		{
@@ -94,10 +94,12 @@ public class PlayerBase : GOManager, IHealth
 		add
 		{
 			onTurnEnd += value;
+			OnComboEndAction += value;
 		}
 		remove
 		{
 			onTurnEnd -= value;
+			OnComboEndAction += value;
 		}
 	}
 
@@ -132,18 +134,25 @@ public class PlayerBase : GOManager, IHealth
 		int oldHealth = Health;
 		if (Health < damageCount)
         {
+			Health -= damageCount;
+			Health = Mathf.Clamp(Health, 0, HealthCapacity);
+			onDamage?.Invoke(this, oldHealth);
 			OverKillAmount = damageCount - Health;
-        }
-        else
+			Debug.Log("OverKillAmount" + OverKillAmount);
+			Kill();
+		}
+		else if (Health == damageCount)
         {
 			Health -= damageCount;
 			Health = Mathf.Clamp(Health, 0, HealthCapacity);
 			onDamage?.Invoke(this, oldHealth);
-		}
-		
-		if (Health <= 0)
-		{
 			Kill();
+		}
+        else if (Health > damageCount)
+        {
+			Health -= damageCount;
+			Health = Mathf.Clamp(Health, 0, HealthCapacity);
+			onDamage?.Invoke(this, oldHealth);
 		}
 		UpdateHealthBar();
 	}
@@ -151,7 +160,7 @@ public class PlayerBase : GOManager, IHealth
 	public void Kill()
 	{
 		Alive = false;
-		//onDeath?.Invoke(this);
+		//onDeath?.Invoke();
 		//CombatManager.Instance.OnEnemyDefeated();
 	}
 	public void UpdateHealthBar()
@@ -188,7 +197,7 @@ public class PlayerBase : GOManager, IHealth
 
 	public virtual void CompleteMove()
 	{
-		if (CombatManager.Instance.currentEnemy.Alive)
+		/*if (CombatManager.Instance.currentEnemy.Alive)
         {
 			CompleteMoveAction?.DynamicInvoke();
 			CompleteMoveAction = null;
@@ -196,7 +205,7 @@ public class PlayerBase : GOManager, IHealth
         else
         {
 			CombatManager.Instance.OnEnemyDefeated();
-		}
+		}*/
 	}
 
 	/*public virtual void BindCharacter(Character character)
@@ -224,8 +233,8 @@ public class PlayerBase : GOManager, IHealth
 	protected virtual void OnItemsVisuallyCollected(CollectionChain chain)
 	{
 	}
-
-	protected virtual void OnComboOver()
+	public virtual void OnComboOver()
 	{
+		onTurnEnd?.Invoke();
 	}
 }

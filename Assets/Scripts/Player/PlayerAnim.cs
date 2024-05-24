@@ -44,13 +44,14 @@ public class PlayerAnim : MonoBehaviour, IAnimatable
             randIndex = randomIntExcept(0, 3, randIndex);
             anim.SetInteger("AtkIndex", randIndex);
             anim.SetInteger("AtkTime", atkTime);
-            CombatManager.Instance.OnPlayerAnimationComplete();
+            CombatManager.Instance.OnPlayerAnimationComplete(atkTime);
         }
         if (atkTime == 0)
         {
             anim.SetInteger("AtkTime", atkTime);
-            playerHandle.MakeMove(() => CombatManager.Instance.EnemyAttack(CombatManager.Instance.atkTime));
-            playerHandle.CompleteMove();
+            /*playerHandle.MakeMove(() => CombatManager.Instance.EnemyAttack(CombatManager.Instance.atkTime));
+            playerHandle.CompleteMove();*/
+            playerHandle.OnComboOver();
         }
         
     }

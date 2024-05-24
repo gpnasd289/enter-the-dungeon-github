@@ -39,6 +39,7 @@ public class TracingHandler : MonoBehaviour
             matchedList.Add(c);
         }
         HandleMatch(matchedList);
+        count = matchedList.Count;
     }
 
     private void ResetChain(object cell)
@@ -57,6 +58,7 @@ public class TracingHandler : MonoBehaviour
         for (int i = 0; i < matchedCells.Count; i++)
         {
             int async = i;
+            matchedCells[async].Collider.enabled = false;
             if (i < matchedCells.Count - 1 && matchedCells.Count < 4)
             {
                 matchedCells[async].Item.FlyToPlayer(flyDelay, DropBoard);
@@ -83,6 +85,16 @@ public class TracingHandler : MonoBehaviour
                 matchedCells[async].PopItem(matchedCells.Count);
                 flyDelay += 0.1f;
                 Debug.Log("last cell: " + matchedCells[async].name + " contain: " + matchedCells[async].Item.name);
+            }
+        }
+        if (CellField.isContainSpecial)
+        {
+            for (int i = 0; i < matchedCells.Count; i++)
+            {
+                if (matchedCells[i].Item.isSpecial)
+                {
+                    CombatManager.Instance.multipleDmg = matchedCells[i].Item.multiply;
+                }
             }
         }
     }

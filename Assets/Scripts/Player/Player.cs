@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 
 public class Player : PlayerBase
@@ -40,16 +41,26 @@ public class Player : PlayerBase
 		SetAlive(true);
 		UpdateHealthBar();
 	}
-	public void DealDamageToEnemy(Enemy enemy)
+	public void DealDamageToEnemy(Enemy enemy, int atkTime)
 	{
-		int damage = CalculateDamage(); // Implement your damage calculation logic
+		int damage = CalculateDamage(atkTime); // Implement your damage calculation logic
 		enemy.TakeDamage(damage);
-		OnDamageDealth?.Invoke();
+		OnDamageDealth?.Invoke(damage);
 	}
 
-    private int CalculateDamage()
+    private int CalculateDamage(int atkTime)
     {
-		return atk;
+		Debug.Log("attack time: " + atkTime);
+		if (atkTime > 0)
+        {
+			Debug.Log("attack " + atkTime + " damage " + atk);
+			return atk;
+		}
+        else
+        {
+			Debug.Log("dmg multiply: " + atk * CombatManager.Instance.multipleDmg);
+			return atk * CombatManager.Instance.multipleDmg;
+        }
     }
 
     public override void MakeMove(Action onMoveComplete)
@@ -78,8 +89,18 @@ public class Player : PlayerBase
 	{
 	}
 
-	protected override void OnComboOver()
+	public override void OnComboOver()
 	{
+		/*OnComboEndAction = (() => CombatManager.Instance.EnemyAttack(CombatManager.Instance.atkTime));
+		OnComboEndAction?.Invoke();*/
+		if (CombatManager.Instance.currentEnemy.Alive)
+        {
+			CombatManager.Instance.EnemyAttack(CombatManager.Instance.atkTime);
+		}
+        else
+        {
+			CombatManager.Instance.OnEnemyDefeated();
+        }
 	}
 
 	protected override void OnMove()

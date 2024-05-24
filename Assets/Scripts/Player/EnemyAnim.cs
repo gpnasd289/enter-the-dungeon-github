@@ -50,7 +50,8 @@ public class EnemyAnim : MonoBehaviour, IAnimatable
         if (atkTime == 0)
         {
             anim.SetInteger("AtkTime", atkTime);
-            enemyHandle.CompleteMove();
+            //enemyHandle.CompleteMove();
+            enemyHandle.OnComboOver();
         }
     }
 

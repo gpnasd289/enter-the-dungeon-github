@@ -188,7 +188,7 @@ public class Cell : NonUIObject
 			Field.idChose = Item.id;
 			Field.cellChoseList.Add(this);
 			Observer.Instance.Notify(EventName.BeginChain, this);
-			UpdateCellHighlights();
+			Field.UpdateChoseCellHighlightAndCol();
 		}
 	}
 
@@ -197,7 +197,7 @@ public class Cell : NonUIObject
 		if (Item != null)
         {
 			Debug.Log("mouse up");
-			ResetAllCellHighlights();
+			Field.UpdateAllHighlightAndCol();
 			if (Field.cellChoseList.Count >= 2 && Field.cellChoseList.Count < 4)
 			{
 				Observer.Instance.Notify(EventName.MatchChain);
@@ -234,6 +234,7 @@ public class Cell : NonUIObject
 			{
 				Field.cellChoseList[0] = null;
 				Field.cellChoseList.Clear();
+				Field.ResetAllHighlightAndCol();
 			}
 		}
 	}
@@ -252,7 +253,7 @@ public class Cell : NonUIObject
             }*/
             if (Field.cellChoseList.Count > 0)
 			{
-				UpdateCellHighlights();
+				//UpdateCellHighlights();
 				if (Item.id == Field.idChose && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1])) // ^1 == list[listcount - 1]
 				{
 					Field.cellChoseList.Add(this);
@@ -352,6 +353,7 @@ public class Cell : NonUIObject
     {
 		Debug.Log(this.name);
 		Debug.Log(this.Item.name);
+		Debug.Log(this.Item.multiply);
+		Debug.Log(this.Item.isSpecial);
     }
-	
 }

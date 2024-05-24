@@ -152,6 +152,7 @@ public class CellField : GOManager
 					GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
 					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
 					spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
+					spawnItem.GetComponent<CellItem>().SetGrayedOut();
 					spawnItem.name = $"Item {x} {y}";
 					Debug.Log("element: " + itemPrefab.CellItem + " chance: " + itemPrefab.Chance + "%");
 				}
@@ -165,6 +166,7 @@ public class CellField : GOManager
 		Element itemPrefab = listElement[GetRandomElementIndex()];
 		GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
 		cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
+		spawnItem.GetComponent<CellItem>().SetGrayedOut();
 		spawnItem.name = $"ItemAdd {x} {y}";
 	}
 	public bool IsValidPosition(Vector2Int position)
@@ -178,6 +180,56 @@ public class CellField : GOManager
 			return cellArr[position.x, position.y];
 		}
 		return null;
+	}
+	public void ResetAllHighlightAndCol()
+    {
+		for (int i = 0; i < cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < cellArr.GetLength(0); j++)
+			{
+				if (cellArr[i, j].Item != null)
+				{
+					cellArr[i, j].Item.ResetToDefaultLooks();
+					cellArr[i, j].Collider.enabled = true;
+				}
+			}
+		}
+	}
+	public void UpdateAllHighlightAndCol()
+    {
+        for (int i = 0; i < cellArr.GetLength(0); i++)
+        {
+            for (int j = 0; j < cellArr.GetLength(0); j++)
+            {
+                if (cellArr[i, j].Item != null)
+                {
+					cellArr[i, j].Item.SetGrayedOut();
+					cellArr[i, j].Collider.enabled = false;
+				}
+            }
+        }
+    }
+	public void UpdateChoseCellHighlightAndCol()
+    {
+		for (int i = 0; i < cellArr.GetLength(0); i++)
+		{
+			for (int j = 0; j < cellArr.GetLength(0); j++)
+			{
+				if (cellArr[i, j].Item != null)
+				{
+					if (cellArr[i, j].Item.id == idChose || cellArr[i, j].Item.isSpecial)
+					{
+						cellArr[i, j].Item.Highlight();
+						cellArr[i, j].Collider.enabled = true;
+					}
+					else
+					{
+						cellArr[i, j].Item.SetGrayedOut();
+						cellArr[i, j].Collider.enabled = false;
+					}
+				}
+			}
+		}
 	}
 	private void CalcWeights()
     {

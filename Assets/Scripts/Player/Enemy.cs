@@ -24,10 +24,9 @@ public class Enemy : PlayerBase
 	}
 	public void DealDamageToPlayer(Player player)
 	{
-		Debug.Log("deal " + atk + " damage to " + player.name);
 		int damage = CalculateDamage(); // Implement your damage calculation logic
 		player.TakeDamage(damage);
-		OnDamageDealth?.Invoke();
+		OnDamageDealth?.Invoke(damage);
 	}
 
     private int CalculateDamage()
@@ -49,8 +48,9 @@ public class Enemy : PlayerBase
 	{
 	}*/
 
-	protected override void OnComboOver()
+	public override void OnComboOver()
 	{
+		base.OnComboOver();
 	}
 
 	protected override void OnMove()
@@ -73,4 +73,9 @@ public class Enemy : PlayerBase
 			OnComboEndAction?.Invoke();
 		}
 	}*/
+	[Button]
+	public void DebugState()
+    {
+		Debug.Log("enemy alive: " + Alive);
+    }
 }
