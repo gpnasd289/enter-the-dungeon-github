@@ -185,10 +185,20 @@ public class Cell : NonUIObject
 		if (Item != null)
         {
 			Debug.Log(Item.name);
-			Field.idChose = Item.id;
-			Field.cellChoseList.Add(this);
-			Observer.Instance.Notify(EventName.BeginChain, this);
-			Field.UpdateChoseCellHighlightAndCol();
+			if (Item.id == 5)
+			{
+                Field.idChose = Item.id;
+                Field.cellChoseList.Add(this);
+				Field.isContainSpecial = true;
+                Observer.Instance.Notify(EventName.BeginChain, this);
+            }
+			else
+			{
+                Field.idChose = Item.id;
+                Field.cellChoseList.Add(this);
+                Observer.Instance.Notify(EventName.BeginChain, this);
+                Field.UpdateChoseCellHighlightAndCol();
+            }
 		}
 	}
 
@@ -234,6 +244,7 @@ public class Cell : NonUIObject
 			{
 				Field.cellChoseList[0] = null;
 				Field.cellChoseList.Clear();
+				Field.isContainSpecial = false;
 				Field.ResetAllHighlightAndCol();
 			}
 		}
@@ -253,45 +264,85 @@ public class Cell : NonUIObject
             }*/
             if (Field.cellChoseList.Count > 0)
 			{
-				//UpdateCellHighlights();
-				if (Item.id == Field.idChose && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1])) // ^1 == list[listcount - 1]
+				if (!Field.isContainSpecial)
 				{
-					Field.cellChoseList.Add(this);
-					Debug.Log("cell add: " + Field.cellChoseList[^1].name);
-					Observer.Instance.Notify(EventName.AddToChain, this);
-				}
-				else if (Item.isSpecial && !Field.isContainSpecial && IsNeighbour(Field.cellChoseList[^1]))
+                    if (Item.id == Field.idChose && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1])) // ^1 == list[listcount - 1]
+                    {
+                        Field.cellChoseList.Add(this);
+                        Debug.Log("cell add: " + Field.cellChoseList[^1].name);
+                        Observer.Instance.Notify(EventName.AddToChain, this);
+                    }
+                    else if (Item.isSpecial && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        Field.cellChoseList.Add(this);
+                        Field.isContainSpecial = true;
+                        Debug.Log("cell add: " + Field.cellChoseList[^1].name);
+                        Observer.Instance.Notify(EventName.AddToChain, this);
+                    }
+                    else if (Item.id == Field.idChose && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        if (Field.cellChoseList[^2] == this)
+                        {
+                            Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
+                            Field.cellChoseList.Remove(Field.cellChoseList[^1]);
+                            //Field.cellChoseList[^1] = null;
+
+                            Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
+                        }
+                    }
+                    else if (Item.isSpecial && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        if (Field.cellChoseList[^2] == this)
+                        {
+                            Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
+                            Field.cellChoseList.Remove(Field.cellChoseList[^1]);
+                            //Field.cellChoseList[^1] = null;
+                            Field.isContainSpecial = false;
+                            Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
+                        }
+                    }
+                }
+                else //Field.isContainSpecial
                 {
-					Field.cellChoseList.Add(this);
-					Field.isContainSpecial = true;
-					Debug.Log("cell add: " + Field.cellChoseList[^1].name);
-					Observer.Instance.Notify(EventName.AddToChain, this);
-				}
-				else if (Item.id == Field.idChose && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
-                {
-					if (Field.cellChoseList[^2] == this)
-					{
-						Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
-						Field.cellChoseList.Remove(Field.cellChoseList[^1]);
-						//Field.cellChoseList[^1] = null;
-						
-						Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
-					}
-				}
-				else if (Item.isSpecial && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
-				{
-					if (Field.cellChoseList[^2] == this)
-					{
-						Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
-						Field.cellChoseList.Remove(Field.cellChoseList[^1]);
-						//Field.cellChoseList[^1] = null;
-						Field.isContainSpecial = false;
-						Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
-					}
-				}
+                    if (Field.idChose == 5 && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        Field.cellChoseList.Add(this);
+                        Field.isContainSpecial = true;
+                        Field.idChose = Item.id;
+                        Debug.Log("cell add: " + Field.cellChoseList[^1].name);
+                        Observer.Instance.Notify(EventName.AddToChain, this);
+                    }
+                    else if (Item.id == Field.idChose && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        Field.cellChoseList.Add(this);
+                        Debug.Log("cell add: " + Field.cellChoseList[^1].name);
+                        Observer.Instance.Notify(EventName.AddToChain, this);
+                    }
+                    else if (Item.id == Field.idChose && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        if (Field.cellChoseList[^2] == this)
+                        {
+                            Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
+                            Field.cellChoseList.Remove(Field.cellChoseList[^1]);
+                            //Field.cellChoseList[^1] = null;
+
+                            Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
+                        }
+                    }
+                    else if (Item.isSpecial && Field.cellChoseList.Count > 1 && Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    {
+                        if (Field.cellChoseList[^2] == this)
+                        {
+                            Debug.Log("cell remove: " + Field.cellChoseList[^1].name);
+                            Field.cellChoseList.Remove(Field.cellChoseList[^1]);
+                            
+                            Field.idChose = 5;
+                            Observer.Instance.Notify(EventName.RemoveFromChain, Field.cellChoseList[^1]);
+                        }
+                    }
+                }
 			}
 		}
-		
     }
 
     protected override void MouseExit()

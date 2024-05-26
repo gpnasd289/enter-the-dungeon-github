@@ -54,6 +54,10 @@ public class CellItem : GOManager
     public void FlyToPlayer(float flyDelay, Action onComplete)
     {
         DisableMaskInteraction();
+        if (isSpecial)
+        {
+            CombatManager.Instance.multipleDmg = multiply;
+        }
         icon.transform.DOMove(new Vector3(1,11,0), 1f).SetDelay(flyDelay).OnComplete(() => {
             this.gameObject.SetActive(false);
             onComplete?.Invoke();
@@ -81,8 +85,9 @@ public class CellItem : GOManager
         multiplyTxt.sortingLayerID = SortingLayer.NameToID("Obj Visual");
         multiplyTxt.sortingOrder = 3;
         multiplyTxt.text = "x" + multiply;
-        transform.localScale = Vector3.zero;
-        transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f);
+        /*transform.localScale = Vector3.zero;
+        transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f);*/
+        SetGrayedOut();
     }
 
     public virtual void DisableMaskInteraction()

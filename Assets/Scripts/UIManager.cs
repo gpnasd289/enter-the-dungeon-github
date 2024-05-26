@@ -2,7 +2,9 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -11,6 +13,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI overkillTxt;
     public TextMeshProUGUI overkillAmountTxt;
     public TextMeshPro floatingTxtPrefab;
+    public GameObject winPanel;
+    public GameObject losePanel;
 
 
     public static UIManager Instance;
@@ -42,6 +46,7 @@ public class UIManager : MonoBehaviour
             floatingTxt.transform.DOScale(0f, 0.5f);
             floatingTxt.gameObject.SetActive(false);
         });
+        overkillTxt.text = "OverKill: " + CombatManager.Instance.currentEnemy.OverKillAmount;
     }
     public void FloatingTxtPlayer(int damage)
     {
@@ -54,5 +59,9 @@ public class UIManager : MonoBehaviour
             floatingTxt.transform.DOScale(0f, 0.5f);
             floatingTxt.gameObject.SetActive(false);
         });
+    }
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(0);
     }
 }

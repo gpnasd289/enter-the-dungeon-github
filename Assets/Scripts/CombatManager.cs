@@ -89,12 +89,14 @@ public class CombatManager : MonoBehaviour
         else
         {
             // Handle level completion
+            UIManager.Instance.winPanel.SetActive(true);
             Debug.Log("Level Complete");
         }
     }
 
     public void OnPlayerDefeated()
     {
+        UIManager.Instance.losePanel.SetActive(true);
         Debug.Log("Player Defeated");
         // Handle player defeat logic
     }
@@ -102,6 +104,7 @@ public class CombatManager : MonoBehaviour
     private void SpawnEnemy()
     {
         Debug.Log("spawn enemy");
+        UIManager.Instance.overkillTxt.text = "Overkill";
         currentEnemy = Instantiate(enemyPrefab, enemySpawnPoint);
         currentEnemy.OnDamageDealth += UIManager.Instance.FloatingTxtPlayer;
         enemyAnim = currentEnemy.enemyAnim;

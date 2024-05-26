@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class HealthBar : MonoBehaviour
     public Slider easeHealthSld;
     public float maxHealth;
     public float health;
+    public TextMeshProUGUI healthTxt;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,14 @@ public class HealthBar : MonoBehaviour
         if (healthSld.value != easeHealthSld.value)
         {
             easeHealthSld.DOValue(healthSld.value, 1f);
+            if (health == 100)
+            {
+                healthTxt.text = 100.ToString();
+            }
+            else
+            {
+                healthTxt.text = (Mathf.FloorToInt(easeHealthSld.value)).ToString();
+            }
         }
     }
 }

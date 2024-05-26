@@ -22,7 +22,7 @@ public class TracingHandler : MonoBehaviour
 
     public int count = 0;
     public bool BeingProcessed { get; }
-    private List<Cell> matchedList = new List<Cell>(); 
+    public List<Cell> matchedList = new List<Cell>(); 
     // Start is called before the first frame update
     void Start()
     {
@@ -75,6 +75,12 @@ public class TracingHandler : MonoBehaviour
                 matchedCells[async].ClearItem();
                 flyDelay += 0.1f;
             }
+            else if (i < matchedCells.Count - 1 && matchedCells.Count >= 4)
+            {
+                matchedCells[async].Item.FlyToPlayer(flyDelay, DropBoard);
+                matchedCells[async].ClearItem();
+                flyDelay += 0.1f;
+            }
             else if (i == matchedCells.Count - 1 && matchedCells.Count >= 4)
             {
                 matchedCells[async].Item.FlyToPlayer(flyDelay, () => {
@@ -82,12 +88,12 @@ public class TracingHandler : MonoBehaviour
                     matchedCells.Clear();
                     DropBoard();
                 });
-                matchedCells[async].PopItem(matchedCells.Count);
+                matchedCells[async].PopItem(matchedCells.Count); // sua thanh bay xong pop 
                 flyDelay += 0.1f;
                 Debug.Log("last cell: " + matchedCells[async].name + " contain: " + matchedCells[async].Item.name);
             }
         }
-        if (CellField.isContainSpecial)
+        /*if (CellField.isContainSpecial)
         {
             for (int i = 0; i < matchedCells.Count; i++)
             {
@@ -96,7 +102,7 @@ public class TracingHandler : MonoBehaviour
                     CombatManager.Instance.multipleDmg = matchedCells[i].Item.multiply;
                 }
             }
-        }
+        }*/
     }
     public void DropBoard()
     {

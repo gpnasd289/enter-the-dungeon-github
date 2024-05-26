@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class NonUIObject : GOManager
 {
@@ -30,35 +31,60 @@ public class NonUIObject : GOManager
     }
 	public static bool IsPointerOverUIObject()
 	{
-		return false;
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            Debug.Log("Clicked on the UI");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
 	}
 
 	private void OnMouseDown()
 	{
-		MouseDown();
+		if (!IsPointerOverUIObject()) {
+            MouseDown();
+        }
 	}
 
 	private void OnMouseUp()
 	{
-		MouseUp();
-	}
+        if (!IsPointerOverUIObject())
+        {
+            MouseUp();
+        }
+    }
 
 	private void OnMouseEnter()
 	{
-		MouseEnter();
-	}
+        if (!IsPointerOverUIObject())
+        {
+            MouseEnter();
+        }
+    }
 
 	private void OnMouseExit()
 	{
-		MouseExit();
-	}
+        if (!IsPointerOverUIObject())
+        {
+            MouseExit();
+        }
+    }
 
 	private void OnMouseOver()
 	{
-		MouseOver();
-	}
+        if (!IsPointerOverUIObject())
+        {
+            MouseOver();
+        }
+    }
     private void OnMouseDrag()
     {
-		MouseDrag();
+        if (!IsPointerOverUIObject())
+        {
+            MouseDrag();
+        }
     }
 }

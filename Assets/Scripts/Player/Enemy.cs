@@ -50,8 +50,16 @@ public class Enemy : PlayerBase
 
 	public override void OnComboOver()
 	{
-		base.OnComboOver();
-	}
+		
+        if (CombatManager.Instance.player.Alive)
+        {
+            base.OnComboOver();
+        }
+        else
+        {
+			CombatManager.Instance.OnPlayerDefeated();
+        }
+    }
 
 	protected override void OnMove()
 	{
