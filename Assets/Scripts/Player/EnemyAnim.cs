@@ -8,7 +8,7 @@ public class EnemyAnim : MonoBehaviour, IAnimatable
 {
     private readonly System.Random rand = new System.Random();
     public Enemy enemyHandle;
-    private Animator anim;
+    [HideInInspector] public Animator anim;
     public int atkTime;
     public int randIndex;
 
@@ -28,9 +28,9 @@ public class EnemyAnim : MonoBehaviour, IAnimatable
     public void PlayAttackAnimation(int attackCount)
     {
         atkTime = attackCount;
-        randIndex = rand.Next(0, 3);
+        //randIndex = rand.Next(0, 3);
         anim.SetTrigger("Atk");
-        anim.SetInteger("AtkIndex", randIndex);
+        //anim.SetInteger("AtkIndex", randIndex);
         anim.SetInteger("AtkTime", atkTime);
     }
     void Update()
@@ -42,9 +42,9 @@ public class EnemyAnim : MonoBehaviour, IAnimatable
         if (atkTime > 0)
         {
             atkTime--;
-            randIndex = randomIntExcept(0, 3, randIndex);
-            anim.SetInteger("AtkIndex", randIndex);
-            anim.SetTrigger("Atk");
+            //randIndex = randomIntExcept(0, 3, randIndex);
+            //anim.SetInteger("AtkIndex", randIndex);
+            anim.SetInteger("AtkTime", atkTime);
             CombatManager.Instance.OnEnemyAnimationComplete();
         }
         if (atkTime == 0)

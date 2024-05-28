@@ -182,6 +182,7 @@ public class Cell : NonUIObject
 	}
     protected override void MouseDown()
     {
+		
 		if (Item != null)
         {
 			Debug.Log(Item.name);

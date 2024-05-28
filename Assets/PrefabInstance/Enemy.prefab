@@ -1793,10 +1793,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PauseAfterMove: 0
   PauseAfterFightWon: 0
+  healthBar: {fileID: 0}
   atk: 10
   maxHealth: 100
   currentHealth: 100
-  healthBar: {fileID: 0}
   enemyAnim: {fileID: 1308204832462305243}
 --- !u!1 &6451552372906961668
 GameObject:

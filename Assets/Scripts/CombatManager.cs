@@ -78,12 +78,13 @@ public class CombatManager : MonoBehaviour
         if (enemiesDefeated < enemiesPerLevel)
         {
             currentEnemy.OnTurnEnd -= Field.ResetAllHighlightAndCol;
-            currentEnemy.transform.DOScale(0f, 1f).OnComplete(() => {
+            currentEnemy.EnableRagdoll();
+            /*currentEnemy.transform.DOScale(0f, 1f).OnComplete(() => {
                 Destroy(currentEnemy.gameObject);
                 SpawnEnemy();
                 UIManager.Instance.enemyCountSld.value++;
                 Field.ResetAllHighlightAndCol();
-            });
+            });*/
             //MovePlayerToNextEnemy();
         }
         else
@@ -111,7 +112,7 @@ public class CombatManager : MonoBehaviour
         currentEnemy.healthBar = enemyHealthBar;
         currentEnemy.Initialize();
         currentEnemy.transform.localScale = Vector3.zero;
-        currentEnemy.transform.DOScale(1f, 1f).OnComplete(() => currentEnemy.OnTurnEnd += Field.ResetAllHighlightAndCol);
+        currentEnemy.transform.DOScale(3f, 1f).OnComplete(() => currentEnemy.OnTurnEnd += Field.ResetAllHighlightAndCol);
         //currentEnemy.Initialize(); // Assuming an Initialize method to set up the enemy
     }
 

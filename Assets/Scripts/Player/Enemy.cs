@@ -12,15 +12,24 @@ public class Enemy : PlayerBase
 	public int maxHealth;
 	
 	public int currentHealth;
-	//public HealthBar healthBar;
+	
 	public EnemyAnim enemyAnim;
 
-	public void Initialize()
+	private Rigidbody[] _ragdollRbs;
+
+
+
+    private void OnEnable()
+    {
+		_ragdollRbs = GetComponentsInChildren<Rigidbody>();
+    }
+    public void Initialize()
 	{
 		// Initialize enemy-specific data
 		SetHealth(currentHealth, maxHealth);
 		SetAlive(true);
 		UpdateHealthBar();
+		DisableRagdoll();
 	}
 	public void DealDamageToPlayer(Player player)
 	{
@@ -81,6 +90,21 @@ public class Enemy : PlayerBase
 			OnComboEndAction?.Invoke();
 		}
 	}*/
+	private void DisableRagdoll()
+    {
+		foreach (var rb in _ragdollRbs)
+        {
+			rb.isKinematic = true;
+        }
+    }
+	public void EnableRagdoll()
+    {
+		enemyAnim.anim.enabled = false;
+		foreach (var rb in _ragdollRbs)
+		{
+			rb.isKinematic = false;
+		}
+	}
 	[Button]
 	public void DebugState()
     {
