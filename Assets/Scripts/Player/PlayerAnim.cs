@@ -55,7 +55,13 @@ public class PlayerAnim : MonoBehaviour, IAnimatable
         }
         
     }
-
+    public void OnAnimStart()
+    {
+        if (atkTime == 1)
+        {
+            Time.timeScale = 0.5f;
+        }
+    }
     public int randomIntExcept(int min, int max, int except)
     {
         int random = except;

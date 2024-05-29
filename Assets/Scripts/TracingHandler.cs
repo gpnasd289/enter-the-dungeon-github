@@ -106,54 +106,54 @@ public class TracingHandler : MonoBehaviour
     }
     public void DropBoard()
     {
-        for (int y = 1; y < CellField.Height; y++)
+        /*for (int x = 1; x < CellField.Height; x++)
         {
-            for (int x = 0; x < CellField.Width; x++)
+            for (int y = 0; y < CellField.Width; y++)
             {
-                if (y < CellField.Width)
+                if (x < CellField.Width)
                 {
-                    if (CellField.cellArr[x, y].Item != null)
+                    if (CellField.cellArr[x, y].Item != null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)//
                     {
-                        if (x == 0)
+                        if (y == 0)
                         {
-                            if (CellField.cellArr[x, y - 1].Item == null)
+                            if (CellField.cellArr[x - 1, y].Item == null)
                             {
-                                CellField.cellArr[x, y - 1].DropItem(CellField.cellArr[x, y].Item);
+                                CellField.cellArr[x - 1, y].DropItem(CellField.cellArr[x, y].Item);
                                 CellField.cellArr[x, y].ClearItem();
                             }
-                            else if (CellField.cellArr[x + 1, y - 1].Item == null && CellField.cellArr[x + 1, y].Item == null)
+                            else if (CellField.cellArr[x - 1, y + 1].Item == null && CellField.cellArr[x, y + 1].Item == null)
                             {
-                                CellField.cellArr[x + 1, y - 1].DropItem(CellField.cellArr[x, y].Item);
+                                CellField.cellArr[x - 1, y + 1].DropItem(CellField.cellArr[x, y].Item);
 
                                 CellField.cellArr[x, y].ClearItem();
                             }
                         }
-                        else if (x > 0 && x < CellField.Width - 1)
+                        else if (y > 0 && y < CellField.Width - 1)
                         {
-                            if (CellField.cellArr[x, y - 1].Item == null)
+                            if (CellField.cellArr[x - 1, y].Item == null)
                             {
-                                CellField.cellArr[x, y - 1].DropItem(CellField.cellArr[x, y].Item);
+                                CellField.cellArr[x - 1, y].DropItem(CellField.cellArr[x, y].Item);
                                 CellField.cellArr[x, y].ClearItem();
                             }
-                            else if (CellField.cellArr[x - 1, y - 1].Item == null && CellField.cellArr[x - 1, y].Item == null)
+                            else if (CellField.cellArr[x - 1, y - 1].Item == null && CellField.cellArr[x, y - 1].Item == null)
                             {
                                 CellField.cellArr[x - 1, y - 1].DropItem(CellField.cellArr[x, y].Item);
                                 CellField.cellArr[x, y].ClearItem();
                             }
-                            else if (CellField.cellArr[x + 1, y - 1].Item == null && CellField.cellArr[x + 1, y].Item == null)
+                            else if (CellField.cellArr[x - 1, y + 1].Item == null && CellField.cellArr[x, y + 1].Item == null)
                             {
-                                CellField.cellArr[x + 1, y - 1].DropItem(CellField.cellArr[x, y].Item);
+                                CellField.cellArr[x - 1, y + 1].DropItem(CellField.cellArr[x, y].Item);
                                 CellField.cellArr[x, y].ClearItem();
                             }
                         }
                         else
                         {
-                            if (CellField.cellArr[x, y - 1].Item == null)
+                            if (CellField.cellArr[x - 1, y].Item == null)
                             {
-                                CellField.cellArr[x, y - 1].DropItem(CellField.cellArr[x, y].Item);
+                                CellField.cellArr[x - 1, y].DropItem(CellField.cellArr[x, y].Item);
                                 CellField.cellArr[x, y].ClearItem();
                             }
-                            else if (CellField.cellArr[x - 1, y - 1].Item == null && CellField.cellArr[x - 1, y].Item == null)
+                            else if (CellField.cellArr[x - 1, y - 1].Item == null && CellField.cellArr[x, y - 1].Item == null)
                             {
                                 CellField.cellArr[x - 1, y - 1].DropItem(CellField.cellArr[x, y].Item);
                                 CellField.cellArr[x, y].ClearItem();
@@ -161,98 +161,103 @@ public class TracingHandler : MonoBehaviour
                         }
                     }
                 }
-                if (y == (CellField.Width - 1))
+                if (x == (CellField.Width - 1))
                 {
                     if (CellField.cellArr[x, y].Item == null)
                     {
-                        CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x, y + 1]);
-                        CellField.cellItemArr[x, y] = CellField.cellItemArr[x, y + 1];
-                        CellField.cellItemArr[x, y + 1] = null;
-                        CellField.CreateItem(x, y + 1);
-                        Debug.Log("new item" + x + "/" + (y + 1));
+                        CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x + 1, y]);
+                        CellField.cellItemArr[x, y] = CellField.cellItemArr[x + 1, y];
+                        CellField.cellItemArr[x + 1, y] = null;
+                        CellField.CreateItem(x + 1, y);
+                        Debug.Log("new item" + (x + 1) + "/" + (y));
+                    }
+                }
+            }
+        }*/
+
+        
+
+        for (int x = 0; x < CellField.Height; x++)
+        {
+            for (int y = 0; y < CellField.Width; y++)
+            {
+                if (x < (CellField.Height - 1))
+                {
+                    if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)
+                    {
+                        if (y == 0)
+                        {
+                            if (CellField.cellArr[x + 1, y].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y].Item);
+                                CellField.cellArr[x + 1, y].ClearItem();
+                            }
+                            else if (CellField.cellArr[x + 1, y + 1].Item != null && CellField.cellArr[x , y + 1].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y + 1].Item);
+                                CellField.cellArr[x + 1, y + 1].ClearItem();
+                            }
+                        }
+                        else if (y > 0 && y < CellField.Width - 1)
+                        {
+                            if (CellField.cellArr[x + 1, y].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y].Item);
+                                CellField.cellArr[x + 1, y].ClearItem();
+                            }
+                            else if (CellField.cellArr[x + 1, y + 1].Item != null && CellField.cellArr[x, y + 1].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y + 1].Item);
+                                CellField.cellArr[x + 1, y + 1].ClearItem();
+                            }
+                            else if (CellField.cellArr[x + 1, y - 1].Item != null && CellField.cellArr[x, y - 1].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x - 1, y + 1].Item);
+                                CellField.cellArr[x + 1, y - 1].ClearItem();
+                            }
+                        }
+                        else
+                        {
+                            if (CellField.cellArr[x + 1, y].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y].Item);
+                                CellField.cellArr[x + 1, y].ClearItem();
+                            }
+                            else if (CellField.cellArr[x + 1, y - 1].Item != null && CellField.cellArr[x, y - 1].Item != null)
+                            {
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x - 1, y + 1].Item);
+                                CellField.cellArr[x + 1, y - 1].ClearItem();
+                            }
+                        }
+                    }
+                }
+                    
+
+                if (x == (CellField.Height - 2))
+                {
+                    if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)
+                    {
+                        //CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x, y + 1], () => CellField.CreateItem(x, y));
+                        CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x + 1, y]);
+                        CellField.cellItemArr[x, y] = CellField.cellItemArr[x + 1, y];
+                        CellField.cellItemArr[x + 1, y] = null;
+                        CellField.CreateItem(x + 1, y);
+                        Debug.Log("new item" + (x + 1) + "/" + (y));
                     }
                 }
             }
         }
-
         if (CheckBoard() == false)
         {
             DropBoard();
         }
-
-        /*for (int y = 0; y < CellField.Height; y++)
-        {
-            for (int x = 0; x < CellField.Width; x++)
-            {
-                
-                    if (CellField.cellArr[x, y].Item == null)
-                    {
-                        if (x == 0)
-                        {
-                            if (CellField.cellArr[x, y + 1].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x, y + 1].Item);
-                                CellField.cellArr[x, y + 1].ClearItem();
-                            }
-                            else if (CellField.cellArr[x + 1, y + 1].Item != null && CellField.cellArr[x + 1, y].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y + 1].Item);
-                                CellField.cellArr[x + 1, y + 1].ClearItem();
-                            }
-                        }
-                        else if (x > 0 && x < CellField.Width - 1)
-                        {
-                            if (CellField.cellArr[x, y + 1].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x, y + 1].Item);
-                                CellField.cellArr[x, y + 1].ClearItem();
-                            }
-                            else if (CellField.cellArr[x + 1, y + 1].Item != null && CellField.cellArr[x + 1, y].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y + 1].Item);
-                                CellField.cellArr[x + 1, y + 1].ClearItem();
-                            }
-                            else if (CellField.cellArr[x - 1, y + 1].Item != null && CellField.cellArr[x - 1, y].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x - 1, y + 1].Item);
-                                CellField.cellArr[x - 1, y + 1].ClearItem();
-                            }
-                        }
-                        else
-                        {
-                            if (CellField.cellArr[x, y + 1].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x, y + 1].Item);
-                                CellField.cellArr[x, y + 1].ClearItem();
-                            }
-                            else if (CellField.cellArr[x - 1, y + 1].Item != null && CellField.cellArr[x - 1, y].Item != null)
-                            {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x - 1, y + 1].Item);
-                                CellField.cellArr[x - 1, y + 1].ClearItem();
-                            }
-                        }
-                    }
-                
-                *//*if (y == (CellField.Width - 1))
-                {
-                    if (CellField.cellArr[x, y].Item == null)
-                    {
-                        CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x, y + 1], () => CellField.CreateItem(x, y));
-                    }
-                }*//*
-            }
-        }*/
-
-        //fill ô hàng tren cùng
-
-        //if (CheckBoard() == false) DropBoard();
     }
 
     public bool CheckBoard()
     {
         for ( int y= 0; y<CellField.Height; y++) 
             for (int x =0; x<CellField.Width; x++)
-                if (CellField.cellArr[x, y].Item == null)
+                if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)
                 {
                     return false;
                 }

@@ -106,14 +106,15 @@ public class CellField : GOManager
 		cellChoseList = new List<Cell>();
 		cellArr = new Cell[cellSize.x, cellSize.y];
 		cellItemArr = new CellItem[cellSize.x, cellSize.y];
-		Width = cellSize.x;
-		Height = cellSize.y;
+		Width = cellSize.y;
+		Height = cellSize.x;
 		CalcWeights();
 	}
     // Start is called before the first frame update
     void Start()
     {
-        GenerateField();
+		GenerateField();
+        //GenerateCell();
     }
 
     // Update is called once per frame
@@ -128,23 +129,51 @@ public class CellField : GOManager
             for (int y = 0; y < cellSize.y; y++)
             {
 				// Instantiate cell
-				Vector3 cellPosition = new Vector3(x * cellPrefab.transform.localScale.x, y * cellPrefab.transform.localScale.y);
-				if (y < cellSize.x)
+				Vector3 cellPosition = new Vector3(y * cellPrefab.transform.localScale.x, x * cellPrefab.transform.localScale.y);
+				if (x < cellSize.y)
                 {
 					Cell cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity, cellsGroup).GetComponent<Cell>();
 					cell.Initialize(this, new Vector2Int(x, y));
 					cellArr[x, y] = cell;
 					cell.name = $"Cell {x} {y}";
+                    for (int i = 0; i < LevelManager.Instance.cellList.Count; i++)
+                    {
+                        if (LevelManager.Instance.cellList[i].Placement == cell.Placement)
+                        {
+                            cell.Breakable = LevelManager.Instance.cellList[i].Breakable;
+                            cell.Health = LevelManager.Instance.cellList[i].Health;
+                            cell.ItemID = LevelManager.Instance.cellList[i].ItemID;
+                            if (cell.Breakable)
+                            {
+                                if (cell.Health == 0)
+                                {
+                                    Element itemPrefab = listElement[cell.ItemID];
+                                    GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
+                                    cell.SetItem(spawnItem.GetComponent<CellItem>());
+                                    cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
+                                    spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
+                                    spawnItem.name = $"Item {x} {y}";
+                                }
+                                else
+                                {
+                                    //spawn obstacles
+                                }
+                            }
+                            else
+                            {
+                                //spawn unbreakable cell
+                            }
 
-					// Instantiate item
-					Element itemPrefab = listElement[GetRandomElementIndex()];
-					GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
-					cell.SetItem(spawnItem.GetComponent<CellItem>());
-					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
+                        }
+                    }
+                    // Instantiate item
+                    /*Element itemPrefab = listElement[GetRandomElementIndex()];
+                    GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
+                    cell.SetItem(spawnItem.GetComponent<CellItem>());
+                    cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
                     spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
-                    spawnItem.name = $"Item {x} {y}";
-					Debug.Log("element: " + itemPrefab.CellItem + " chance: " + itemPrefab.Chance + "%");
-				}
+                    spawnItem.name = $"Item {x} {y}";*/
+                }
 				else
                 {
 					// Instantiate item drop
@@ -154,15 +183,49 @@ public class CellField : GOManager
 					spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
 					spawnItem.GetComponent<CellItem>().SetGrayedOut();
 					spawnItem.name = $"Item {x} {y}";
-					Debug.Log("element: " + itemPrefab.CellItem + " chance: " + itemPrefab.Chance + "%");
 				}
 			}
         }
     }
+	private void GenerateCell()
+    {
+		for (int x = 0; x < cellSize.x; x++)
+		{
+			for (int y = 0; y < cellSize.y; y++)
+			{
+				// Instantiate cell
+				Vector3 cellPosition = new Vector3(y * cellPrefab.transform.localScale.x, x * cellPrefab.transform.localScale.y);
+				if (y < cellSize.x)
+				{
+					Cell cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity, cellsGroup).GetComponent<Cell>();
+					cell.Initialize(this, new Vector2Int(x, y));
+					cellArr[x, y] = cell;
+					cell.name = $"Cell {x} {y}";
+
+					/*// Instantiate item
+					Element itemPrefab = listElement[GetRandomElementIndex()];
+					GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
+					cell.SetItem(spawnItem.GetComponent<CellItem>());
+					cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
+					spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
+					spawnItem.name = $"Item {x} {y}";
+					Debug.Log("element: " + itemPrefab.CellItem + " chance: " + itemPrefab.Chance + "%");*/
+				}
+				else
+				{
+					// Instantiate cell contain item drop
+					Cell cell = Instantiate(cellPrefab, cellPosition, Quaternion.identity, cellsGroup).GetComponent<Cell>();
+					cell.Initialize(this, new Vector2Int(x, y));
+					cellArr[x, y] = cell;
+					cell.name = $"Cell {x} {y}";
+				}
+			}
+		}
+	}
 	public void CreateItem(int x, int y)
     {
 		// Instantiate item drop
-		Vector3 cellPosition = new Vector3(x * cellPrefab.transform.localScale.x, y * cellPrefab.transform.localScale.y);
+		Vector3 cellPosition = new Vector3(y * cellPrefab.transform.localScale.x, x * cellPrefab.transform.localScale.y);
 		Element itemPrefab = listElement[GetRandomElementIndex()];
 		GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
 		cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
@@ -183,9 +246,9 @@ public class CellField : GOManager
 	}
 	public void ResetAllHighlightAndCol()
     {
-		for (int i = 0; i < cellArr.GetLength(0); i++)
+		for (int i = 0; i < cellArr.GetLength(1); i++)
 		{
-			for (int j = 0; j < cellArr.GetLength(0); j++)
+			for (int j = 0; j < cellArr.GetLength(1); j++)
 			{
 				if (cellArr[i, j].Item != null)
 				{
@@ -197,9 +260,9 @@ public class CellField : GOManager
 	}
 	public void UpdateAllHighlightAndCol()
     {
-        for (int i = 0; i < cellArr.GetLength(0); i++)
+        for (int i = 0; i < cellArr.GetLength(1); i++)
         {
-            for (int j = 0; j < cellArr.GetLength(0); j++)
+            for (int j = 0; j < cellArr.GetLength(1); j++)
             {
                 if (cellArr[i, j].Item != null)
                 {
@@ -211,9 +274,9 @@ public class CellField : GOManager
     }
 	public void UpdateChoseCellHighlightAndCol()
     {
-		for (int i = 0; i < cellArr.GetLength(0); i++)
+		for (int i = 0; i < cellArr.GetLength(1); i++)
 		{
-			for (int j = 0; j < cellArr.GetLength(0); j++)
+			for (int j = 0; j < cellArr.GetLength(1); j++)
 			{
 				if (cellArr[i, j].Item != null)
 				{

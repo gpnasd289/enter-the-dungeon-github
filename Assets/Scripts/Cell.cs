@@ -4,7 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using QuangDM.Common;
 using DG.Tweening;
+[System.Serializable]
+public class CellInfo
+{
+	public Vector2Int Placement;
 
+	public bool Breakable;
+
+	public int Health;
+
+	public int ItemID;
+}
 public class Cell : NonUIObject
 {
 	public bool Breakable;
@@ -13,6 +23,7 @@ public class Cell : NonUIObject
 
 	public bool Empty;
 
+	public int ItemID;
 	//[SerializeField]
 	//private float EnhancedRadius;
 
@@ -186,7 +197,7 @@ public class Cell : NonUIObject
 		if (Item != null)
         {
 			Debug.Log(Item.name);
-			if (Item.id == 5)
+			if (Item.id == 0)
 			{
                 Field.idChose = Item.id;
                 Field.cellChoseList.Add(this);
@@ -369,9 +380,9 @@ public class Cell : NonUIObject
     }
 	private void UpdateCellHighlights()
 	{
-		for (int i = 0; i < Field.cellArr.GetLength(0); i++)
+		for (int i = 0; i < Field.cellArr.GetLength(1); i++)
 		{
-			for (int j = 0; j < Field.cellArr.GetLength(0); j++)
+			for (int j = 0; j < Field.cellArr.GetLength(1); j++)
 			{
 				if (Field.cellArr[i, j].Item != null)
 				{
@@ -389,9 +400,9 @@ public class Cell : NonUIObject
 	}
 	private void ResetAllCellHighlights()
 	{
-		for (int i = 0; i < Field.cellArr.GetLength(0); i++)
+		for (int i = 0; i < Field.cellArr.GetLength(1); i++)
 		{
-			for (int j = 0; j < Field.cellArr.GetLength(0); j++)
+			for (int j = 0; j < Field.cellArr.GetLength(1); j++)
 			{
 				if (Field.cellArr[i, j].Item != null)
 				{
@@ -404,6 +415,7 @@ public class Cell : NonUIObject
 	public void DebugNameAndItem()
     {
 		Debug.Log(this.name);
+		Debug.Log(this.Placement);
 		Debug.Log(this.Item.name);
 		Debug.Log(this.Item.multiply);
 		Debug.Log(this.Item.isSpecial);

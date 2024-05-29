@@ -79,6 +79,14 @@ public class CombatManager : MonoBehaviour
         {
             currentEnemy.OnTurnEnd -= Field.ResetAllHighlightAndCol;
             currentEnemy.EnableRagdoll();
+            FuncManager.instance.DelayTimeFunc(1.5f, () =>
+            {
+                Time.timeScale = 1;
+                Destroy(currentEnemy.gameObject);
+                SpawnEnemy();
+                UIManager.Instance.enemyCountSld.value++;
+                Field.ResetAllHighlightAndCol();
+            });
             /*currentEnemy.transform.DOScale(0f, 1f).OnComplete(() => {
                 Destroy(currentEnemy.gameObject);
                 SpawnEnemy();

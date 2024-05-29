@@ -18985,9 +18985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1219b92169e0142a96b5551a4b2044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMouseHold: 0
-  isMouseUp: 0
-  id: 5
+  id: 0
   isSpecial: 1
   multiply: 0
   multiplyTxt: {fileID: 3622306431384743056}

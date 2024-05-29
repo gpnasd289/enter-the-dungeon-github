@@ -2,9 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
+public class EnemyInfo
+{
+	public string enemyName;
+	public int atk;
+	public int health;
+	public int element;
+}
 public class Enemy : PlayerBase
 {
+	
 	public int Level { get; private set; }
 
 	public int atk;
@@ -103,9 +111,15 @@ public class Enemy : PlayerBase
 		foreach (var rb in _ragdollRbs)
 		{
 			rb.isKinematic = false;
+			rb.AddForce(new Vector3(24, 24, 0), ForceMode.Impulse);
 		}
+		
 	}
-	[Button]
+    private void OnTriggerEnter(Collider other)
+    {
+		Debug.Log("enemy take dmg");
+    }
+    [Button]
 	public void DebugState()
     {
 		Debug.Log("enemy alive: " + Alive);

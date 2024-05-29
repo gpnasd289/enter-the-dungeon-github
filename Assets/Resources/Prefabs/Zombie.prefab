@@ -5717,7 +5717,7 @@ GameObject:
   - component: {fileID: 4571588884032458823}
   - component: {fileID: 4618870775719948041}
   m_Layer: 0
-  m_Name: LessZom_BASE
+  m_Name: Zombie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

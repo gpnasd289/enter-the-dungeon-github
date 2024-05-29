@@ -4,25 +4,16 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public List<GameObject> enemyList = new List<GameObject>();
+    public List<EnemyInfo> enemyList = new List<EnemyInfo>();
+    public List<CellInfo> cellList = new List<CellInfo>();
     public Transform enemyParent;
-    // Start is called before the first frame update
-    void Start()
+    public static LevelManager Instance;
+    private void Awake()
     {
-        //GenerateEnemy();
+        Instance = this;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void InitField()
     {
         
-    }
-    public void GenerateEnemy()
-    {
-        if (enemyList.Count > 0)
-        {
-            GameObject enemy = Instantiate(enemyList[^1], enemyParent);
-
-        }
     }
 }
