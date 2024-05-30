@@ -21,6 +21,7 @@ public class CombatManager : MonoBehaviour
     public CellField Field;
     public int atkTime;
     public int multipleDmg = 1;
+    public List<float> listPlayerTurnDmg = new();
     void Awake()
     {
         Instance = this;
@@ -42,6 +43,27 @@ public class CombatManager : MonoBehaviour
     {
         List<Cell> temp = (List<Cell>)data;
         atkTime = temp.Count;
+        if (Field.isContainSpecial)
+        {
+            for (int i = 0; i < atkTime; i++)
+            {
+                if (i != (atkTime - 1))
+                {
+                    listPlayerTurnDmg.Add(player.atk);
+                }
+                else
+                {
+                    listPlayerTurnDmg.Add(player.atk * multipleDmg);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < atkTime; i++)
+            {
+                listPlayerTurnDmg.Add(player.atk);
+            }
+        }
         PlayerAttack(atkTime);
     }
 
@@ -59,7 +81,18 @@ public class CombatManager : MonoBehaviour
 
     public void OnPlayerAnimationComplete(int atkTime)
     {
-        player.DealDamageToEnemy(currentEnemy, atkTime);
+        if (atkTime > 0)
+        {
+            player.DealDamageToEnemy(currentEnemy, listPlayerTurnDmg[0]);
+        }
+        else if (atkTime == 0)
+        {
+            player.DealDamageToEnemy(currentEnemy, listPlayerTurnDmg[^1]);
+            if (listPlayerTurnDmg[^1] >= currentEnemy.Health)
+            {
+                Time.timeScale = 0.5f;
+            }
+        }
     }
 
     public void OnEnemyAnimationComplete()
@@ -79,7 +112,7 @@ public class CombatManager : MonoBehaviour
         {
             currentEnemy.OnTurnEnd -= Field.ResetAllHighlightAndCol;
             currentEnemy.EnableRagdoll();
-            FuncManager.instance.DelayTimeFunc(1.5f, () =>
+            FuncManager.instance.DelayTimeFunc(2f, () =>
             {
                 Time.timeScale = 1;
                 Destroy(currentEnemy.gameObject);
@@ -114,11 +147,13 @@ public class CombatManager : MonoBehaviour
     {
         Debug.Log("spawn enemy");
         UIManager.Instance.overkillTxt.text = "Overkill";
+        Debug.Log("enemy " + LevelManager.Instance.enemyList[enemiesDefeated].enemyName);
+        enemyPrefab = Resources.Load<GameObject>("Prefabs/" + LevelManager.Instance.enemyList[enemiesDefeated].enemyName).GetComponent<Enemy>();
         currentEnemy = Instantiate(enemyPrefab, enemySpawnPoint);
         currentEnemy.OnDamageDealth += UIManager.Instance.FloatingTxtPlayer;
         enemyAnim = currentEnemy.enemyAnim;
         currentEnemy.healthBar = enemyHealthBar;
-        currentEnemy.Initialize();
+        currentEnemy.Initialize(LevelManager.Instance.enemyList[enemiesDefeated].atk, LevelManager.Instance.enemyList[enemiesDefeated].health);
         currentEnemy.transform.localScale = Vector3.zero;
         currentEnemy.transform.DOScale(3f, 1f).OnComplete(() => currentEnemy.OnTurnEnd += Field.ResetAllHighlightAndCol);
         //currentEnemy.Initialize(); // Assuming an Initialize method to set up the enemy

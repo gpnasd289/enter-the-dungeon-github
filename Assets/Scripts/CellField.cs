@@ -150,19 +150,22 @@ public class CellField : GOManager
                                     Element itemPrefab = listElement[cell.ItemID];
                                     GameObject spawnItem = Instantiate(itemPrefab.Prefab, cellPosition, Quaternion.identity, itemsGroup);
                                     cell.SetItem(spawnItem.GetComponent<CellItem>());
+									cell.cellStt = CellStatus.Available;
                                     cellItemArr[x, y] = spawnItem.GetComponent<CellItem>();
                                     spawnItem.GetComponent<CellItem>().Placement = new Vector2Int(x, y);
                                     spawnItem.name = $"Item {x} {y}";
                                 }
                                 else
                                 {
-                                    //spawn obstacles
-                                }
+									//spawn obstacles
+									cell.cellStt = CellStatus.Breakable;
+								}
                             }
                             else
                             {
-                                //spawn unbreakable cell
-                            }
+								//spawn unbreakable cell
+								cell.cellStt = CellStatus.Unbreakable;
+							}
 
                         }
                     }

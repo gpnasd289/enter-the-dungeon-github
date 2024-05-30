@@ -31,10 +31,13 @@ public class Enemy : PlayerBase
     {
 		_ragdollRbs = GetComponentsInChildren<Rigidbody>();
     }
-    public void Initialize()
+    public void Initialize(int atkIn, int healthIn)
 	{
 		// Initialize enemy-specific data
-		SetHealth(currentHealth, maxHealth);
+		atk = atkIn;
+		currentHealth = healthIn;
+		maxHealth = healthIn;
+		SetHealth(healthIn);
 		SetAlive(true);
 		UpdateHealthBar();
 		DisableRagdoll();
@@ -51,7 +54,12 @@ public class Enemy : PlayerBase
 		return atk;
     }
 
-	/*public void MakeMove(Action onMoveComplete)
+    public override void TakeDamage(float damageCount, bool canSurvive = false)
+    {
+        base.TakeDamage(damageCount);
+		enemyAnim.anim.SetTrigger("TakeDmg");
+    }
+    /*public void MakeMove(Action onMoveComplete)
 	{
 		enemyAnim.PlayAttackAnimation(1); // Adjust attack count as needed
 		CompleteMoveAction = onMoveComplete;
@@ -61,11 +69,11 @@ public class Enemy : PlayerBase
 	{
 		CompleteMoveAction?.DynamicInvoke();
 	}*/
-	/*public override void BindCharacter(Character character)
+    /*public override void BindCharacter(Character character)
 	{
 	}*/
 
-	public override void OnComboOver()
+    public override void OnComboOver()
 	{
 		
         if (CombatManager.Instance.player.Alive)

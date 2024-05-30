@@ -37,13 +37,13 @@ public class Player : PlayerBase
 	public void Initialize()
 	{
 		// Initialize enemy-specific data
-		SetHealth(currentHealth, maxHealth);
+		SetHealth(maxHealth);
 		SetAlive(true);
 		UpdateHealthBar();
 	}
-	public void DealDamageToEnemy(Enemy enemy, int atkTime)
+	public void DealDamageToEnemy(Enemy enemy, float atkDmg)
 	{
-		int damage = CalculateDamage(atkTime); // Implement your damage calculation logic
+		float damage = atkDmg; // Implement your damage calculation logic
 		enemy.TakeDamage(damage);
 		OnDamageDealth?.Invoke(damage);
 	}

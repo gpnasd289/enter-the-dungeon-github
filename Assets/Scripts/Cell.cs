@@ -15,6 +15,13 @@ public class CellInfo
 
 	public int ItemID;
 }
+[System.Serializable]
+public enum CellStatus
+{
+	Unbreakable,
+	Breakable,
+	Available
+}
 public class Cell : NonUIObject
 {
 	public bool Breakable;
@@ -24,6 +31,33 @@ public class Cell : NonUIObject
 	public bool Empty;
 
 	public int ItemID;
+
+	private CellStatus _cellStt;
+
+	public CellStatus cellStt
+    {
+        get
+        {
+			return _cellStt;
+        }
+        set
+        {
+			_cellStt = value;
+			switch (_cellStt)
+            {
+				case CellStatus.Breakable:
+					Collider.enabled = false;
+					break;
+				case CellStatus.Unbreakable:
+					Collider.enabled = false;
+					Background.sprite = Resources.Load<Sprite>("Sprites/CellBlock");
+					break;
+				case CellStatus.Available:
+					Collider.enabled = true;
+					break;
+            }
+        }
+    }
 	//[SerializeField]
 	//private float EnhancedRadius;
 

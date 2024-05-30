@@ -1,8 +1,8 @@
 public interface IHealth
 {
-    int Health { get; }
-    int HealthCapacity { get; set; }
-    void Heal(int health);
-    void TakeDamage(int damage, bool canSurvive = false);
+    float Health { get; }
+    float HealthCapacity { get; set; }
+    void Heal(float health);
+    void TakeDamage(float damage, bool canSurvive = false);
     bool Alive { get; }
 }

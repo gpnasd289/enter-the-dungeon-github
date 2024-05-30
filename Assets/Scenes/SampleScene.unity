@@ -582,8 +582,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSld: {fileID: 574972444}
   easeHealthSld: {fileID: 2039473358}
-  maxHealth: 100
-  health: 100
+  maxHealth: 0
+  health: 0
   healthTxt: {fileID: 59610130}
 --- !u!1 &119234656
 GameObject:
@@ -1597,21 +1597,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyList:
-  - enemyName: zombie
+  - enemyName: Zombie
     atk: 10
-    health: 100
+    health: 50
     element: 1
-  - enemyName: zombie
+  - enemyName: Zombie
     atk: 10
-    health: 100
+    health: 60
     element: 2
-  - enemyName: zombie
+  - enemyName: Zombie
     atk: 10
-    health: 100
+    health: 70
     element: 3
-  - enemyName: zombie
+  - enemyName: Zombie
     atk: 10
-    health: 100
+    health: 80
     element: 4
   cellList:
   - Placement: {x: 0, y: 0}
@@ -2429,8 +2429,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSld: {fileID: 1534565709}
   easeHealthSld: {fileID: 1852835656}
-  maxHealth: 200
-  health: 200
+  maxHealth: 0
+  health: 0
   healthTxt: {fileID: 1126275553}
 --- !u!1 &922228885
 GameObject:

@@ -15,10 +15,7 @@ public class HealthBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        healthSld.maxValue = maxHealth;
-        easeHealthSld.maxValue = maxHealth;
-        healthSld.value = health;
-        easeHealthSld.value = health;
+        
     }
 
     // Update is called once per frame
@@ -31,14 +28,24 @@ public class HealthBar : MonoBehaviour
         if (healthSld.value != easeHealthSld.value)
         {
             easeHealthSld.DOValue(healthSld.value, 1f);
-            if (health == 100)
+            if (health == maxHealth)
             {
-                healthTxt.text = 100.ToString();
+                healthTxt.text = maxHealth.ToString();
             }
             else
             {
                 healthTxt.text = (Mathf.FloorToInt(easeHealthSld.value)).ToString();
             }
         }
+    }
+    public void InitializeHealthBar(float healthIn)
+    {
+        health = healthIn;
+        maxHealth = healthIn;
+        healthTxt.text = healthIn.ToString();
+        healthSld.maxValue = maxHealth;
+        easeHealthSld.maxValue = maxHealth;
+        healthSld.value = health;
+        easeHealthSld.value = health;
     }
 }

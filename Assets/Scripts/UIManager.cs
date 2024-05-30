@@ -35,11 +35,11 @@ public class UIManager : MonoBehaviour
     {
         
     }
-    public void FloatingTxtEnemy(int damage)
+    public void FloatingTxtEnemy(float damage)
     {
         Vector3 loc = new Vector3(0.5f, 5, 0) + CombatManager.Instance.currentEnemy.GetComponentInParent<Transform>().position;
         TextMeshPro floatingTxt = Instantiate(floatingTxtPrefab, loc, Quaternion.identity);
-        floatingTxt.text = damage.ToString();
+        floatingTxt.text = ((int)damage).ToString();
         floatingTxt.transform.localScale = Vector3.zero;
         floatingTxt.transform.DOScale(1f, 1f);
         floatingTxt.transform.DOMoveY(loc.y + 1, 1f).OnComplete(() => {
@@ -48,11 +48,11 @@ public class UIManager : MonoBehaviour
         });
         overkillTxt.text = "OverKill: " + CombatManager.Instance.currentEnemy.OverKillAmount;
     }
-    public void FloatingTxtPlayer(int damage)
+    public void FloatingTxtPlayer(float damage)
     {
         Vector3 loc = new Vector3(0.5f, 5, 0) + CombatManager.Instance.player.GetComponentInParent<Transform>().position;
         TextMeshPro floatingTxt = Instantiate(floatingTxtPrefab, loc, Quaternion.identity);
-        floatingTxt.text = damage.ToString();
+        floatingTxt.text = ((int)damage).ToString();
         floatingTxt.transform.localScale = Vector3.zero;
         floatingTxt.transform.DOScale(1f, 1f);
         floatingTxt.transform.DOMoveY(loc.y + 1, 1f).OnComplete(() => {

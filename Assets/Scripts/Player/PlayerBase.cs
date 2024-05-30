@@ -8,11 +8,11 @@ public class PlayerBase : GOManager, IHealth
 {
 	public delegate void GeneralEvent(PlayerBase player);
 
-	public delegate void HealthEvent(PlayerBase player, int oldVal);
+	public delegate void HealthEvent(PlayerBase player, float oldVal);
 
 	//public Character Character;
 
-	public Action<int> OnDamageDealth;
+	public Action<float> OnDamageDealth;
 
 	public Action OnComboEndAction;
 
@@ -26,13 +26,13 @@ public class PlayerBase : GOManager, IHealth
 
 	public string Name { get; private set; }
 
-	public int Health { get; private set; }
+	public float Health { get; private set; }
 
-	public int HealthCapacity { get; set; }
+	public float HealthCapacity { get; set; }
 
 	public bool Alive { get; private set; }
 
-	public int OverKillAmount { get; private set; }
+	public float OverKillAmount { get; private set; }
 
 	private bool MoveActive { get; set; }
 
@@ -113,25 +113,26 @@ public class PlayerBase : GOManager, IHealth
 		Name = name;
 		onNameChange?.Invoke(this);
 	}
-	public void SetHealth(int health, int maxHealth)
+	public void SetHealth(float health)
 	{
+		healthBar.InitializeHealthBar(health);
 		Health = health;
-		HealthCapacity = maxHealth;
+		HealthCapacity = health;
 	}
 	public void SetAlive(bool alive)
 	{
 		Alive = alive;
 	}
-	public void Heal(int health)
+	public void Heal(float health)
 	{
-		int oldHealth = Health;
+		float oldHealth = Health;
 		Health = Mathf.Clamp(Health + health, 0, HealthCapacity);
         onHeal?.Invoke(this, oldHealth);
 		UpdateHealthBar();
 	}
-	public virtual void TakeDamage(int damageCount, bool canSurvive = false)
+	public virtual void TakeDamage(float damageCount, bool canSurvive = false)
 	{
-		int oldHealth = Health;
+		float oldHealth = Health;
 		if (Health < damageCount)
         {
 			Health -= damageCount;
@@ -153,6 +154,7 @@ public class PlayerBase : GOManager, IHealth
 			Health -= damageCount;
 			Health = Mathf.Clamp(Health, 0, HealthCapacity);
 			onDamage?.Invoke(this, oldHealth);
+
 		}
 		UpdateHealthBar();
 	}
