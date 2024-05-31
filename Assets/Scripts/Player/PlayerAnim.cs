@@ -40,7 +40,7 @@ public class PlayerAnim : MonoBehaviour, IAnimatable
         
         if (atkTime > 0)
         {
-            CombatManager.Instance.OnPlayerAnimationComplete(atkTime);
+            //CombatManager.Instance.OnPlayerAnimationComplete(atkTime);
             atkTime--;
             randIndex = randomIntExcept(0, 3, randIndex);
             anim.SetInteger("AtkIndex", randIndex);
@@ -56,12 +56,11 @@ public class PlayerAnim : MonoBehaviour, IAnimatable
         }
         
     }
-    public void OnAnimDoDmg()
+    public void OnAnimDealDmg()
     {
-        if (atkTime > 0)
-        {
+        
             CombatManager.Instance.OnPlayerAnimationComplete(atkTime);
-        }
+        
     }
     public int randomIntExcept(int min, int max, int except)
     {

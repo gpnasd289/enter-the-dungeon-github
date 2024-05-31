@@ -25,7 +25,7 @@ public class Enemy : PlayerBase
 
 	private Rigidbody[] _ragdollRbs;
 
-
+	private System.Random rand = new();
 
     private void OnEnable()
     {
@@ -119,7 +119,7 @@ public class Enemy : PlayerBase
 		foreach (var rb in _ragdollRbs)
 		{
 			rb.isKinematic = false;
-			rb.AddForce(new Vector3(24, 24, 0), ForceMode.Impulse);
+			rb.AddForce(new Vector3(rand.Next(20,25), rand.Next(12, 25), 0), ForceMode.Impulse);
 		}
 		
 	}

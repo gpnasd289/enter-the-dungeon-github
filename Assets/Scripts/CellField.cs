@@ -318,6 +318,19 @@ public class CellField : GOManager
         }
 		return false;
 	}
+	[Button]
+	public bool CheckFieldNull()
+	{
+		for (int x = 0; x < Height - 2; x++)
+			for (int y = 0; y < Width - 1; y++)
+				if (cellArr[x, y].Item == null && cellArr[x, y].Breakable && cellArr[x, y].Health == 0)
+				{
+					Debug.Log("true: " + cellArr[x, y].name);
+					return true;
+				}
+		Debug.Log(false);
+		return false;
+	}
 	private int GetRandomElementIndex()
     {
 		double r = rand.NextDouble() * accumulateWeights;

@@ -43,6 +43,7 @@ public class CombatManager : MonoBehaviour
     {
         List<Cell> temp = (List<Cell>)data;
         atkTime = temp.Count;
+        listPlayerTurnDmg = new();
         if (Field.isContainSpecial)
         {
             for (int i = 0; i < atkTime; i++)
@@ -81,17 +82,18 @@ public class CombatManager : MonoBehaviour
 
     public void OnPlayerAnimationComplete(int atkTime)
     {
-        if (atkTime > 0)
+        if (atkTime > 1)
         {
             player.DealDamageToEnemy(currentEnemy, listPlayerTurnDmg[0]);
         }
-        else if (atkTime == 0)
+        else if (atkTime == 1)
         {
-            player.DealDamageToEnemy(currentEnemy, listPlayerTurnDmg[^1]);
             if (listPlayerTurnDmg[^1] >= currentEnemy.Health)
             {
                 Time.timeScale = 0.5f;
+                OnEnemyTakeFinalHit();
             }
+            player.DealDamageToEnemy(currentEnemy, listPlayerTurnDmg[^1]);
         }
     }
 
@@ -111,8 +113,7 @@ public class CombatManager : MonoBehaviour
         if (enemiesDefeated < enemiesPerLevel)
         {
             currentEnemy.OnTurnEnd -= Field.ResetAllHighlightAndCol;
-            currentEnemy.EnableRagdoll();
-            FuncManager.instance.DelayTimeFunc(2f, () =>
+            FuncManager.instance.DelayTimeFunc(1f, () =>
             {
                 Time.timeScale = 1;
                 Destroy(currentEnemy.gameObject);
@@ -141,6 +142,10 @@ public class CombatManager : MonoBehaviour
         UIManager.Instance.losePanel.SetActive(true);
         Debug.Log("Player Defeated");
         // Handle player defeat logic
+    }
+    public void OnEnemyTakeFinalHit()
+    {
+        currentEnemy.EnableRagdoll();
     }
 
     private void SpawnEnemy()

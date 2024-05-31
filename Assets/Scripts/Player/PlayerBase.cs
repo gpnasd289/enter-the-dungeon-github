@@ -157,6 +157,7 @@ public class PlayerBase : GOManager, IHealth
 
 		}
 		UpdateHealthBar();
+		CameraShake.Shake(0.5f, 0.5f);
 	}
 
 	public void Kill()

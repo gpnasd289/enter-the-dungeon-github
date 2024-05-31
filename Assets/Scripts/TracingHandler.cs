@@ -28,6 +28,7 @@ public class TracingHandler : MonoBehaviour
     {
         Observer.Instance.AddObserver(EventName.ResetChain, ResetChain);
         Observer.Instance.AddObserver(EventName.MatchChain, MatchChain);
+        //Observer.Instance.AddObserver("CheckDropBoard", CheckDropBoard);
     }
 
     private void MatchChain(object cell)
@@ -192,7 +193,7 @@ public class TracingHandler : MonoBehaviour
             {
                 if (x < (CellField.Height - 2))
                 {
-                    if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)
+                    if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].cellStt == CellStatus.Available)
                     {
                         if (y == 0)
                         {
@@ -209,6 +210,7 @@ public class TracingHandler : MonoBehaviour
                         }
                         else if (y > 0 && y < CellField.Width - 1)
                         {
+                            Debug.Log("right case");
                             if (CellField.cellArr[x + 1, y].Item != null)
                             {
                                 CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y].Item);
@@ -221,7 +223,8 @@ public class TracingHandler : MonoBehaviour
                             }
                             else if (CellField.cellArr[x + 1, y - 1].Item != null && CellField.cellArr[x, y - 1].Item != null)
                             {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x - 1, y + 1].Item);
+                                Debug.Log("right case 2");
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y - 1].Item);
                                 CellField.cellArr[x + 1, y - 1].ClearItem();
                             }
                         }
@@ -234,7 +237,7 @@ public class TracingHandler : MonoBehaviour
                             }
                             else if (CellField.cellArr[x + 1, y - 1].Item != null && CellField.cellArr[x, y - 1].Item != null)
                             {
-                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x - 1, y + 1].Item);
+                                CellField.cellArr[x, y].DropItem(CellField.cellArr[x + 1, y - 1].Item);
                                 CellField.cellArr[x + 1, y - 1].ClearItem();
                             }
                         }
@@ -244,7 +247,7 @@ public class TracingHandler : MonoBehaviour
 
                 if (x == (CellField.Height - 2))
                 {
-                    if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)
+                    if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].cellStt == CellStatus.Available)
                     {
                         //CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x, y + 1], () => CellField.CreateItem(x, y));
                         CellField.cellArr[x, y].DropItem(CellField.cellItemArr[x + 1, y]);
@@ -256,20 +259,9 @@ public class TracingHandler : MonoBehaviour
                 }
             }
         }
-        if (CheckBoard() == false)
+        if (CellField.CheckFieldNull() == true)
         {
             DropBoard();
         }
-    }
-
-    public bool CheckBoard()
-    {
-        for ( int x = 0; x < CellField.Height; x++) 
-            for (int y =0; y < CellField.Width; y++)
-                if (CellField.cellArr[x, y].Item == null && CellField.cellArr[x, y].Breakable && CellField.cellArr[x, y].Health == 0)
-                {
-                    return false;
-                }
-        return true;
     }
 }

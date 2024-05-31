@@ -144,6 +144,7 @@ public class Cell : NonUIObject
 	{
 		SetItem(newItem);
 		newItem.transform.DOMove(this.transform.position, 0.5f);
+		//newItem.transform.position = this.transform.position;
 	}
 	private bool IsValidDropTarget(Cell targetCell)
 	{
@@ -350,7 +351,7 @@ public class Cell : NonUIObject
                 }
                 else //Field.isContainSpecial
                 {
-                    if (Field.idChose == 5 && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
+                    if (Field.idChose == 0 && !Field.cellChoseList.Contains(this) && IsNeighbour(Field.cellChoseList[^1]))
                     {
                         Field.cellChoseList.Add(this);
                         Field.isContainSpecial = true;
@@ -448,10 +449,11 @@ public class Cell : NonUIObject
 	[Button]
 	public void DebugNameAndItem()
     {
+		Debug.Log(this.cellStt);
 		Debug.Log(this.name);
 		Debug.Log(this.Placement);
 		Debug.Log(this.Item.name);
 		Debug.Log(this.Item.multiply);
-		Debug.Log(this.Item.isSpecial);
+        Debug.Log(this.Item.isSpecial);
     }
 }
